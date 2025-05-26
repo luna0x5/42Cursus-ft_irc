@@ -1,14 +1,20 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
 #include <poll.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <iostream>
+#include <unistd.h>
+#include <cstdlib>
 
 class Server {
     private:
         int port;
-        std::string password
+        std::string password;
         int Socket_fd;
         // std::vector<Client*> clients;
         // std::vector<Channel*> Channels;
@@ -21,7 +27,5 @@ class Server {
         void handle_new_connections();
         void handle_client_data();
 };
-
-
 
 #endif

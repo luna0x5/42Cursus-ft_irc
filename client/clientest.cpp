@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 
 constexpr const char* SERVER_IP = "127.0.0.1";
-constexpr int SERVER_PORT = 6667;
+constexpr int SERVER_PORT = 8080;
 constexpr int BUFFER_SIZE = 1024;
 
 void send_line(int sockfd, const std::string& msg) {
@@ -38,7 +38,7 @@ int main() {
     sockaddr_in server_addr{};
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(SERVER_PORT);
-    inet_pton(AF_INET, SERVER_IP, &server_addr.sin_addr);
+    inet_pton(AF_INET, SERVER_IP, &server_addr.sin_addr); //interesting
 
     if (connect(sockfd, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         perror("connect");
