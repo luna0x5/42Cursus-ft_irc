@@ -54,15 +54,15 @@ int Server::server_socket(){
                     if (bytes <= 0){
                         close(poll_fds[i].fd); //client deconnecte
                         std::cout<<"client : "<<poll_fds[i].fd<<" deconnecte"<<std::endl;
+                        //erase the specific client  client[poll_fds[i].fd]
                         poll_fds.erase(poll_fds.begin() + i);
                     }
                     else{
                         buffer[bytes] = '\0';
                         client[poll_fds[i].fd].AddBuffer(buffer);
                         client[poll_fds[i].fd].extract_cmds();
-                        //handle_client_data(vector<std::string>);
-                        std::cout<< "Received : "<<client[poll_fds[i].fd].getBuffer()<< " from :" <<poll_fds[i].fd<<std::endl;
-                        //i will split this code into small functions later
+                        handle_client_data(poll_fds[i].fd);
+                        // std::cout<< "Received : "<<client[poll_fds[i].fd].getBuffer()<< " from :" <<poll_fds[i].fd<< "size : "<< client[poll_fds[i].fd].getBuffer().size() <<std::endl;
                     }
                 }
             }
@@ -70,3 +70,68 @@ int Server::server_socket(){
     }
 }
 
+//i will split this code into small functions later
+
+void Server::handle_client_data(int fd){
+    std::vector<std::string>& cmd = client[fd].getCmds();
+    for(size_t i=0; i< cmd.size(); i++){
+        //parse cmd
+        //if else statement or switch with enums cmds to execute each cmd
+        //each command executed must erase from cmd
+        std::cout<<"cmd"<<i<<" : "<<cmd[i]<<std::endl;
+    }
+}
+
+void Server::parse_cmd(std::string cmd){
+
+    std::vector<std::string> line; // i will use the line from class attrbutes
+    std::string message = "";
+    std::string prefix = "";
+    std::string command = "";
+    std::string target = "";
+    size_t pos = cmd.find(" :");
+    if (pos != std::string::npos){
+        message = cmd.substr(pos + 2);
+        cmd.erase(pos);
+    }
+    std::stringstream bf(cmd);
+    if (cmd[0] == ':'){
+        bf>>prefix;
+        prefix.erase(0,1);
+    }
+    bf>>command;
+    bf>>target;
+    if (!command.empty()){
+        line.push_back(command);
+    }
+    if (!target.empty()){
+        line.push_back(target);
+    }
+    if (!message.empty()){
+        line.push_back(message);
+    }
+    if (!prefix.empty()){
+        line.push_back(prefix);
+    }
+
+    for(size_t i=0; i < line.size(); i++){
+        std::cout<< i << " : "<< line[i]<<std::endl;
+    }
+    commands_handler(line);
+    //call another function that will send the cammand to its specific handler
+
+
+    //extract the last param " :" if it exist and store it as a message and erase it
+    //if ':' the first character then we will store it as a prefix and erase it
+    //push the next string (command) to be the first string
+    //push the target if it exist
+    //and then push the message (params) if they exist
+    //push the prefix variable if it's not empty
+}
+
+
+void Server::commands_handler(std::vector<std::string> line){
+    if (line[0] == "JOIN"){
+        std::cout<<"join"<<std::endl;
+    }
+}

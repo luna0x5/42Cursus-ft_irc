@@ -13,7 +13,8 @@
 #include <cstring>
 #include <map>
 #include "Client.hpp"
-#include <fcntl.h> 
+#include <fcntl.h>
+#include <sstream>
 
 class Server {
     private:
@@ -23,14 +24,16 @@ class Server {
         std::map<int, Client> client;
         // std::vector<Channel*> Channels;
         std::vector<pollfd> poll_fds;
+        // std::vector<std::string> line;
 
     public:
-        void start();
-        int server_socket();
+        void start(void);
+        int server_socket(void);
         void running_server(int fd);
-        void handle_new_connections();
-        void handle_client_data();
+        void handle_new_connections(void);
+        void handle_client_data(int fd);
+        void parse_cmd(std::string cmd);
+        void commands_handler(std::vector<std::string> line);
 };
 
 #endif
-
