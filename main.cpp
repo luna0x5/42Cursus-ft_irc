@@ -13,6 +13,6 @@ int main(int ac, char **av) {
         return 1;
     }
     Server test(port, av[2]);
-    test.parse_cmd(":nick!user@host JOIN #channel :Hello everyone!");
-    test.server_socket();
+    // test.parse_cmd(":nick!user@host JOIN #channel :Hello everyone!");
+    test.start();
 }

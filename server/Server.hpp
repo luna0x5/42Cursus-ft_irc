@@ -24,18 +24,18 @@ class Server {
         std::map<int, Client> client;
         // std::vector<Channel*> Channels;
         std::vector<pollfd> poll_fds;
-        // std::vector<std::string> line;
+        std::vector<std::string> line;
 
     public:
         Server(int port , std::string password);
         ~Server();
-        void start(void);
+        int start(void);
         int server_socket(void);
-        void running_server(int fd);
-        void handle_new_connections(void);
+        int running_server(int Socket_fd);
+        void handle_new_connections(int Socket_fd);
         void handle_client_data(int fd);
         void parse_cmd(std::string cmd);
-        void commands_handler(std::vector<std::string> line);
+        void commands_handler(void);
 };
 
 #endif
