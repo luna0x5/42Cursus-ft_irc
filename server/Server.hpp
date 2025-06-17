@@ -12,9 +12,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <map>
-#include "Client.hpp"
+#include "../client/Client.hpp"
 #include <fcntl.h>
 #include <sstream>
+#include <stdexcept>
 
 enum Commands {
     PASS_cmd,
@@ -36,7 +37,7 @@ class Server {
         std::string password;
         int Socket_fd;
         std::map<int, Client> client;
-        // std::vector<Channel*> Channels;
+        // std::vector<Channel> channel;
         std::vector<pollfd> poll_fds;
         std::vector<std::string> line;
         std::map<std::string, Commands> cmd;
@@ -53,6 +54,8 @@ class Server {
         void commands_handler(void);
         void initCmds(void);
         int GetCmds(void);
+        void JOIN(void);
+        int ChannelExist(void);
 };
 
 #endif

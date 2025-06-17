@@ -16,9 +16,7 @@ int Server::server_socket(){
 
     int opt = 1;
     if (setsockopt(Socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){
-        std::cerr<<"failed setsockopt"<<std::endl;
-        close(Socket_fd);
-        return(-1);
+        throw std::runtime_error("Error : Failed to set options");
     }
 
     sockaddr_in serverAdress;
@@ -27,14 +25,11 @@ int Server::server_socket(){
     serverAdress.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(Socket_fd, (struct sockaddr *)&serverAdress, sizeof(serverAdress)) < 0){
-        std::cerr<<"failed bind"<<std::endl;
-        close(Socket_fd);
-        return(-1); 
+        throw std::runtime_error("Error : Failed to bind");
     }
 
     if (listen(Socket_fd, 15) == -1){
-        close(Socket_fd);
-        return(-1);
+        throw std::runtime_error("Error : Failed to listen");
     }
     pollfd listen_fd;
     listen_fd.fd = Socket_fd;
@@ -45,11 +40,10 @@ int Server::server_socket(){
 }
 
 int Server::running_server(int Socket_fd){
-        while(true){
+    while(true){
         int monitor = poll(poll_fds.data(), poll_fds.size(), -1);
         if (monitor < 0){
-            std::cerr<<"failed poll"<<std::endl;
-            return(-1);
+            throw std::runtime_error("Error : Failed poll");
         }
         for (size_t i=0 ; i < poll_fds.size() ; i++){
             if (poll_fds[i].revents & POLLIN){
@@ -77,18 +71,26 @@ int Server::running_server(int Socket_fd){
             }
         }
     }
-
 }
 
 int Server::start(){
-
-    int socket_fd = server_socket();
-    if (socket_fd < 0){
-        std::cerr<<"failed to create server socket"<<std::endl;
-        return(-1);
+    int socket_fd;
+    try{
+        socket_fd = server_socket();
     }
-    if (running_server(socket_fd) < 0){
-        return(-1);
+    catch (const std::exception& e){
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+    try{
+        if (running_server(socket_fd) < 0){
+            return(-1);
+        }
+    }
+    catch (const std::exception& e){
+        std::cerr <<e.what()<<std::endl;
     }
     return (1);
 }
+
+//signals :

@@ -7,3 +7,30 @@
 ---> accept if there is a new connection and create a socket to the new client and assign its fd to the array ;
 ---> otherwise do whatever the revent socket tells us what we should do with that socket ;
 ---> close socket in case of client disconnected 
+
+
+
+================== JOIN Pseudo-code ==================
+              
+******** Channel exist
+
+----> Password exist
+(
+--> Key matches password
+-> Join channel
+
+--> Key doesn't match password
+-> REP Error
+)
+
+----> Password doesn't exist
+(
+--> Join channel
+)
+
+
+******** Channel doesn't exist
+
+----> Create Channel
+----> Join channel
+----> set as operator

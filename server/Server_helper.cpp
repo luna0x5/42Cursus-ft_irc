@@ -4,6 +4,9 @@ void Server::handle_new_connections(int Socket_fd){
     sockaddr_in clientAdress;
     socklen_t len = sizeof(clientAdress);
     int new_socket = accept(Socket_fd, (struct sockaddr *) &clientAdress, &len);
+    if (new_socket < 0){
+        return ;
+    }
     std::cout<<"client connected"<<std::endl;
     int flags = fcntl(new_socket, F_GETFL, 0);
     fcntl(new_socket, F_SETFL, flags | O_NONBLOCK);
@@ -23,7 +26,8 @@ void Server::handle_client_data(int fd){
 }
 
 void Server::initCmds(void){
-    cmd["PASS"] = PASS_cmd;
+    cmd["PASS"] = PASS_cmd;//try catch throw
+
     cmd["NICK"] = NICK_cmd;
     cmd["USER"] = USER_cmd;
     cmd["JOIN"] = JOIN_cmd;
@@ -49,13 +53,14 @@ void Server::commands_handler(){
             std::cout<<"PASS"<<std::endl;
             break;
         case 1:
-            std::cout<<"NICK"<<std::endl;
+            std::cout<<"NICK"<<std::endl;//try catch throw
+
             break;
         case 2:
             std::cout<<"USER"<<std::endl;
             break;
         case 3:
-            std::cout<<"JOIN"<<std::endl;
+            JOIN();
             break;
         case 4:
             std::cout<<"PART"<<std::endl;
@@ -96,12 +101,8 @@ void Server::parse_cmd(std::string cmd){
         prefix.erase(0,1);
     }
     bf>>command;
-    bf>>target;
     if (!command.empty()){
         line.push_back(command);
-    }
-    if (!target.empty()){
-        line.push_back(target);
     }
     if (!message.empty()){
         line.push_back(message);
@@ -109,9 +110,10 @@ void Server::parse_cmd(std::string cmd){
     if (!prefix.empty()){
         line.push_back(prefix);
     }
-
-    for(size_t i=0; i < line.size(); i++){
-        std::cout<< i << " : "<< line[i]<<std::endl;
+    while(bf>>target){
+        if (!target.empty()){
+            line.push_back(target);
+        }
     }
     commands_handler();
 }
