@@ -16,6 +16,20 @@
 #include <fcntl.h>
 #include <sstream>
 
+enum Commands {
+    PASS_cmd,
+    NICK_cmd,
+    USER_cmd,
+    JOIN_cmd,
+    PART_cmd,
+    MODE_cmd,
+    TOPIC_cmd,
+    KICK_cmd,
+    INVITE_cmd,
+    UNKNOWN_cmd
+};
+
+
 class Server {
     private:
         int port;
@@ -25,6 +39,7 @@ class Server {
         // std::vector<Channel*> Channels;
         std::vector<pollfd> poll_fds;
         std::vector<std::string> line;
+        std::map<std::string, Commands> cmd;
 
     public:
         Server(int port , std::string password);
@@ -36,6 +51,8 @@ class Server {
         void handle_client_data(int fd);
         void parse_cmd(std::string cmd);
         void commands_handler(void);
+        void initCmds(void);
+        int GetCmds(void);
 };
 
 #endif

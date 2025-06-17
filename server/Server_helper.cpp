@@ -4,6 +4,7 @@ void Server::handle_new_connections(int Socket_fd){
     sockaddr_in clientAdress;
     socklen_t len = sizeof(clientAdress);
     int new_socket = accept(Socket_fd, (struct sockaddr *) &clientAdress, &len);
+    std::cout<<"client connected"<<std::endl;
     int flags = fcntl(new_socket, F_GETFL, 0);
     fcntl(new_socket, F_SETFL, flags | O_NONBLOCK);
     pollfd new_fd;
@@ -21,24 +22,59 @@ void Server::handle_client_data(int fd){
     cmd.clear();
 }
 
+void Server::initCmds(void){
+    cmd["PASS"] = PASS_cmd;
+    cmd["NICK"] = NICK_cmd;
+    cmd["USER"] = USER_cmd;
+    cmd["JOIN"] = JOIN_cmd;
+    cmd["PART"] = PART_cmd;
+    cmd["MODE"] = MODE_cmd;
+    cmd["TOPIC"] = TOPIC_cmd;
+    cmd["KICK"] = KICK_cmd;
+    cmd["INVITE"] = INVITE_cmd;
+}
+
+int Server::GetCmds(void){
+    std::map<std::string, Commands>::iterator it = cmd.find(line[0]);
+    if (it != cmd.end()){
+        return it->second;
+    }
+    return UNKNOWN_cmd;
+}
+
 void Server::commands_handler(){
-    if (line[0] == "JOIN"){
-        std::cout<<"join"<<std::endl;
-    }
-    else if (line[0] == "NICK"){
-        std::cout<<"nick"<<std::endl;
-    }
-    else if (line[0] == "PRIVMSG"){
-        std::cout<<"privmsg"<<std::endl;
-    }
-    else if (line[0] == "PONG"){
-        std::cout<<"pong"<<std::endl;
-    }
-    else if (line[0] == "PING"){
-        std::cout<<"ping"<<std::endl;
-    }
-    else{
-        std::cout<<"Unknown command: "<<line[0]<<std::endl;
+    int cmd = GetCmds();
+    switch (cmd){
+        case 0:
+            std::cout<<"PASS"<<std::endl;
+            break;
+        case 1:
+            std::cout<<"NICK"<<std::endl;
+            break;
+        case 2:
+            std::cout<<"USER"<<std::endl;
+            break;
+        case 3:
+            std::cout<<"JOIN"<<std::endl;
+            break;
+        case 4:
+            std::cout<<"PART"<<std::endl;
+            break;
+        case 5:
+            std::cout<<"MODE"<<std::endl;
+            break;
+        case 6:
+            std::cout<<"TOPIC"<<std::endl;
+            break;
+        case 7:
+            std::cout<<"KICK"<<std::endl;
+            break;
+        case 8:
+            std::cout<<"INVITE"<<std::endl;
+            break;
+        default:
+            std::cout<<"UNKNOWN"<<std::endl;
+
     }
     line.clear();
 }
