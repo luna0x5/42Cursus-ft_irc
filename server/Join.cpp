@@ -61,7 +61,7 @@ void Server::JOIN(void){
     //     std::cerr<<"key : "<< keys[i]<<std::endl;
     // }
     for (size_t i=0; i<chans.size(); i++){
-        int index = IsChannelExist(chans[i]);
+        size_t index = IsChannelExist(chans[i]);
         if (index <= 0){
             Channel Chan;
             Client *membr = &client[currentClient];
@@ -73,10 +73,19 @@ void Server::JOIN(void){
         }
         else{
             if (channel[index - 1].GetBoolPswd()){
-                std::cout<<"channel exist with password"<<std::endl;
+                if ( i < keys.size() && channel[index-1].GetPassword() == keys[i]){
+                    Client *membr = &client[currentClient];
+                    channel[index - 1].GetMembers().push_back(*membr);
+                    std::cout<<"channel exist with correct password"<<std::endl;
+                }
+                else {
+                    std::cout<<"specific reply for incorrect password"<<std::endl;
+                }
             }
             else {
-                std::cout<<"channel exist without password"<<std::endl;
+                Client *membr = &client[currentClient];
+                channel[index - 1].GetMembers().push_back(*membr);
+                std::cout<<"channel exist witout password : "<<channel[index - 1].GetName()<<std::endl;
             }
         }
     }

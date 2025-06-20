@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel():Name(""), Password(""), paswrd(0){
+Channel::Channel():Name(""), Password("hello"), paswrd(1){
 
 }
 
