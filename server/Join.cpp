@@ -79,7 +79,12 @@ void Server::JOIN(void){
                     std::cout<<"channel exist with correct password"<<std::endl;
                 }
                 else {
-                    std::cout<<"specific reply for incorrect password"<<std::endl;
+                    if (i >= keys.size()){
+                        std::cout<<"specific reply for no password"<<std::endl;
+                    }
+                    else {
+                        std::cout<<"specific reply for password not matched"<<std::endl;
+                    }
                 }
             }
             else {
