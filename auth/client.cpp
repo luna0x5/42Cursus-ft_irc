@@ -1,26 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 02:35:13 by hmoukit           #+#    #+#             */
-/*   Updated: 2025/06/26 15:55:06 by hmoukit          ###   ########.fr       */
+/*   Created: 2025/06/26 13:10:58 by hmoukit           #+#    #+#             */
+/*   Updated: 2025/06/26 15:50:36 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniServer/miniServer.hpp"
+#include "client.hpp"
 
-int main()
+void client::setUser(std::string username)
 {
-    try
-    {
-        miniServer server(6667);
-        server.start();
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
+    userName = username;
+}
+
+std::string client::getUser()
+{
+    return (userName);
+}
+
+void client::setNick(std::string nickname)
+{
+    nickName = nickname;
+}
+
+std::string client::getNick()
+{
+    return (nickName);
+}
+
+void client::setIsAuth(bool isauth)
+{
+    isAuth = isauth;
+}
+
+bool client::getIsAuth()
+{
+    return (isAuth);
 }

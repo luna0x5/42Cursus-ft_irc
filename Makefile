@@ -6,13 +6,13 @@
 #    By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/26 02:35:14 by hmoukit           #+#    #+#              #
-#    Updated: 2025/06/24 10:31:38 by hmoukit          ###   ########.fr        #
+#    Updated: 2025/06/26 15:51:08 by hmoukit          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = server
 
-SRCS = ./miniServer/miniServer.cpp main.cpp
+SRCS = ./miniServer/miniServer.cpp ./auth/client.cpp main.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -24,7 +24,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CPP) $(CPPFLAGS) $(OBJS) -o $(NAME)
 	
-%.o: %.cpp miniServer.hpp
+%.o: %.cpp miniServer.hpp ./auth/client.hpp
 	$(CPP) $(CPPFLAGS) -c -o $@ $<
 
 clean:
