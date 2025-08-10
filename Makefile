@@ -22,6 +22,7 @@ re: fclean all4
 
 push:
 	git add .
+	git status
 	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"
 	git push
 
