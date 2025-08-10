@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(int _port , std::string _password): port(_port), password(_password){
+Server::Server(uint _port , std::string _password): port(_port), password(_password){
     initCmds();
 }
 

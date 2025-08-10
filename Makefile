@@ -18,4 +18,12 @@ clean:
 fclean: clean
 		rm -rf $(NAME)
 
-re: fclean all
+re: fclean all4
+
+M =  AUTO_PUSH
+
+push:
+	git add .
+	git status
+	git commit -m "$(M)"
+	git push
