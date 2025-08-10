@@ -20,10 +20,11 @@ fclean: clean
 
 re: fclean all4
 
-M =  AUTO_PUSH
-
 push:
 	git add .
-	git status
-	git commit -m "$(M)"
+	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"
 	git push
+
+commit:
+	git add .
+	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"
