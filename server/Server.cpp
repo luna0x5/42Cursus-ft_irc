@@ -1,42 +1,51 @@
 #include "Server.hpp"
 
-Server::Server(uint _port , std::string _password): port(_port), password(_password){
+Server::Server(uint port , std::string password): _port(port), _password(password)
+{
     initCmds();
 }
 
-Server::~Server(){
+Server::~Server()
+{
     //destroy all pollfd
 }
 
-int Server::server_socket(){
-    Socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+int 
+Server::server_socket()
+{
+    int err;
 
-    int flag = fcntl(Socket_fd, F_GETFL, 0);
-    fcntl(Socket_fd, F_SETFL, flag | O_NONBLOCK);
+    this->_Socket_fd = socket(AF_INET, SOCK_STREAM, 0);// setting server socket with tcp connection and ipv4 
+    checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
+
+    int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
+    checkErr(flag, -1, "Error: Failed to get server socket status flag!");
+
+    err = fcntl(this->_Socket_fd, F_SETFL, flag | O_NONBLOCK);// setting the socket to non blocking for concurrency
+    checkErr(err, -1, "Error: Failed to set socket flag!");
 
     int opt = 1;
-    if (setsockopt(Socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){
-        throw std::runtime_error("Error : Failed to set options");
-    }
+    err = setsockopt(this->_Socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));// Allowing multiple sockets to bind to the same address and port
+    checkErr(err, -1, "Error: Failed to set socket option!");
 
-    sockaddr_in serverAdress;
+    sockaddr_in serverAdress;// ipv4 socket address
     serverAdress.sin_family = AF_INET;
-    serverAdress.sin_port = htons(port);
-    serverAdress.sin_addr.s_addr = INADDR_ANY;
+    serverAdress.sin_port = htons(this->_port);// converting port to network byte order 
+    serverAdress.sin_addr.s_addr = htonl(INADDR_ANY);// inaddr to listen for all connections
 
-    if (bind(Socket_fd, (struct sockaddr *)&serverAdress, sizeof(serverAdress)) < 0){
-        throw std::runtime_error("Error : Failed to bind");
-    }
-
-    if (listen(Socket_fd, 15) == -1){
-        throw std::runtime_error("Error : Failed to listen");
-    }
+    err = bind(_Socket_fd, (struct sockaddr *)&serverAdress, sizeof(serverAdress));// naming the socket
+    checkErr(err, -1, "Error: Failed to bind!");
+    
+    err = listen(_Socket_fd, 15);// marking the socket as passive (tcp)
+    checkErr(err, -1, "Error: Failed to listen!");
+  
+    // preparing listening socket to be monitored by poll for new incoming connections
     pollfd listen_fd;
-    listen_fd.fd = Socket_fd;
+    listen_fd.fd = this->_Socket_fd;
     listen_fd.events = POLLIN;
-    poll_fds.push_back(listen_fd);
+    this-> _poll_fds.push_back(listen_fd);
 
-    return(Socket_fd);
+    return(this->_Socket_fd);
 }
 
 int Server::running_server(int Socket_fd){
@@ -48,7 +57,7 @@ int Server::running_server(int Socket_fd){
         for (size_t i=0 ; i < poll_fds.size() ; i++){
             if (poll_fds[i].revents & POLLIN){
                 if (poll_fds[i].fd == Socket_fd){
-                    handle_new_connections(Socket_fd);
+                    handle_new_connections(_Socket_fd);
                 }
                 else{
                     char buffer[1048];
@@ -92,5 +101,15 @@ int Server::start(){
     }
     return (1);
 }
+
+
+void
+Server::checkErr(const int res, const int err, const char *msg)
+{
+    if (res == err)
+        throw std::runtime_error(msg);
+    return ;
+}
+
 
 //signals :

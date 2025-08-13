@@ -45,26 +45,34 @@ class Server
             std::vector<Channel>            _channel;
             std::vector<pollfd>             _poll_fds;
             std::vector<std::string>        _line;
-            std::map<std::string, Commands> _cmd;// better add pointer to the command handler instead
+            std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
 
     public:
 
             Server(uint port , std::string password);
             ~Server();
+    
+    private :
 
-            int start(void);
-            int server_socket(void);
-            int running_server(int Socket_fd);
-            void handle_new_connections(int Socket_fd);
-            void handle_client_data(int fd);
-            void parse_cmd(std::string cmd);
-            void commands_handler(void);
-            void initCmds(void);
-            int GetCmds(void);
-            void JOIN(void);
-            int IsChannelExist(std::string ChanName);
-            int split(std::vector<std::string> *channels, std::string& chan, char delimiter);
-            int JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            int     start(void);
+            int     server_socket(void);
+            int     running_server(int Socket_fd);
+
+            void    handle_new_connections(int Socket_fd);
+            void    handle_client_data(int fd);
+
+            void    parse_cmd(std::string cmd);
+            void    commands_handler(void);
+            void    initCmds(void);
+            int     GetCmds(void);
+    
+            int     JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            void    JOIN(void);
+
+            int     IsChannelExist(std::string ChanName);
+            int     split(std::vector<std::string> *channels, std::string& chan, char delimiter);
+            void    checkErr(const int res, const int err, const char *msg);
+
 
 };
 
