@@ -18,10 +18,10 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
     this->_Socket_fd = socket(AF_INET, SOCK_STREAM, 0);// setting server socket with tcp connection and ipv4 
     checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
 
-    int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
-    checkErr(flag, -1, "Error: Failed to get server socket status flag!");
+    // int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
+    // checkErr(flag, -1, "Error: Failed to get server socket status flag!");
 
-    err = fcntl(this->_Socket_fd, F_SETFL, flag | O_NONBLOCK);// setting the socket to non blocking for concurrency
+    err = fcntl(this->_Socket_fd, F_SETFL | O_NONBLOCK);// setting the socket to non blocking for concurrency
     checkErr(err, -1, "Error: Failed to set socket flag!");
 
     int opt = 1;
@@ -48,7 +48,7 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
     return(this->_Socket_fd);
 }
 
-int
+void
 Server::running_server(int Socket_fd)
 {
     while(true)
@@ -61,7 +61,14 @@ Server::running_server(int Socket_fd)
             if (this->_poll_fds[i].revents & POLLIN)//checks if a pollin (data to read) event occured
             {
                 if (this->_poll_fds[i].fd == Socket_fd)// checking if fd whith the POLLIN event is the listening socket(new connection request)
-                    handle_new_connections(_Socket_fd);
+                {
+                    try{
+                        handle_new_connections(_Socket_fd);
+                    }
+                    catch(std::exception& e){
+                        std::cerr<<e.what()<<std::endl;
+                    }
+                }
                 else
                 {
                     char buffer[1048];
@@ -88,20 +95,16 @@ Server::running_server(int Socket_fd)
     }
 }
 
-int Server::start(){
+void Server::start(){
     int socket_fd;
     try{
         socket_fd = server_socket();
-        if (running_server(socket_fd) < 0)
-            return(-1);// TODO: u dont return anything in running server
+        running_server(socket_fd);
     }
     catch (const std::exception& e){
         std::cerr << e.what() << std::endl;
-         return 1;
     }
-    return (1);
 }
-
 
 void
 Server::checkErr(const int res, const int err, const char *msg)
@@ -110,6 +113,5 @@ Server::checkErr(const int res, const int err, const char *msg)
         throw std::runtime_error(msg);
     return ;
 }
-
 
 //signals :

@@ -10,18 +10,12 @@ Server::handle_new_connections(int Socket_fd)
     checkErr(new_socket, -1, "failed to accept new connection!");
     std::cout << "client connected" << std::endl;
 
-    int flags = fcntl(new_socket, F_GETFL, 0);
-    checkErr(flags, -1, "failed to get file status!");
-    checkErr(fcntl(new_socket, F_SETFL, flags | O_NONBLOCK), -1, "failed to add file flags!");
+    checkErr(fcntl(new_socket, F_SETFL, O_NONBLOCK), -1, "failed to add file flags!");
 
     pollfd new_fd;
     new_fd.fd = new_socket;
     new_fd.events = POLLIN;
     this->_poll_fds.push_back(new_fd);
-    /*
-    Client client;
-    client.fd = new_fd.fd;
-    */
     this->_client[new_fd.fd] = Client();
 }
 
@@ -48,7 +42,7 @@ void Server::initCmds(void){
 
 int Server::GetCmds(void){
     std::map<std::string, Commands>::iterator it = this->_cmd.find(this->_line[0]);
-    if (it != cmd.end()){
+    if (it != this->_cmd.end()){
         return it->second;
     }
     return UNKNOWN_cmd;
@@ -58,13 +52,13 @@ void Server::commands_handler(){
     int cmd = GetCmds();
     switch (cmd){
         case 0:
-            std::cout<<"PASS"<<std::endl;
+            PASS();
             break;
         case 1:
-            std::cout<<"NICK"<<std::endl;
+            NICK();
             break;
         case 2:
-            std::cout<<"USER"<<std::endl;
+            USER();
             break;
         case 3:
             JOIN();
@@ -123,4 +117,12 @@ void Server::parse_cmd(std::string cmd){
         }
     }
     commands_handler();
+}
+
+void Server::Sender(std::string num){
+    std::string to_client = ":localhost " + num + this->_client[this->_currentClient].getnick() + " :Welcome to our server\r\n";
+    size_t bytes = send(this->_currentClient, to_client.c_str(), to_client.length(), 0);
+    if(bytes < 0){
+        std::cerr<<"failed send data "<<std::endl;
+    }
 }

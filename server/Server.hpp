@@ -51,30 +51,39 @@ class Server
 
             Server(uint port , std::string password);
             ~Server();
+            void     start(void);
     
     private :
 
-            int     start(void);
-            int     server_socket(void);
-            int     running_server(int Socket_fd);
+            int         server_socket(void);
+            void        running_server(int Socket_fd);
 
-            void    handle_new_connections(int Socket_fd);
-            void    handle_client_data(int fd);
+            void        handle_new_connections(int Socket_fd);
+            void        handle_client_data(int fd);
 
-            void    parse_cmd(std::string cmd);
-            void    commands_handler(void);
-            void    initCmds(void);
-            int     GetCmds(void);
+            void        parse_cmd(std::string cmd);
+            void        commands_handler(void);
+            void        initCmds(void);
+            int         GetCmds(void);
     
-            int     JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
-            void    JOIN(void);
+            int         IsChannelExist(std::string ChanName);
+            int         split(std::vector<std::string> *channels, std::string& chan, char delimiter);
+            void        checkErr(const int res, const int err, const char *msg);
 
-            void    MODE(const std::string& cmd, )
+            int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            void        JOIN(void);
 
-            int     IsChannelExist(std::string ChanName);
-            int     split(std::vector<std::string> *channels, std::string& chan, char delimiter);
-            void    checkErr(const int res, const int err, const char *msg);
+            void        PASS(void);
 
+            void        NICK(void);
+            bool        Nickparse(void);
+            bool        firstChar(void);
+            bool        AlreadyInUse(void);
+            bool        otherChar(void);
+
+            void        USER(void);
+
+            void        Sender(std::string num);
 
 };
 

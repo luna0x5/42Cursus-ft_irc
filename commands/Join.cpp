@@ -1,16 +1,16 @@
-#include "Server.hpp"
+#include "../server/Server.hpp"
 
 int Server::JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys){
     
-    if (line.size()<=1 || line.size()>3){
+    if (this->_line.size()<=1 || this->_line.size()>3){
         std::cerr<<"Error join"<<std::endl;
         return 0;
     }
-    if (!split(channels, line[1], ',')){
+    if (!split(channels, this->_line[1], ',')){
         std::cerr<<"specific replies"<<std::endl;
         return 0;
     }
-    if (line.size() == 3 && !split(keys, line[2], ',')){
+    if (this->_line.size() == 3 && !split(keys, this->_line[2], ',')){
         std::cerr<<"specific replies"<<std::endl;
         return 0;
     }
@@ -42,8 +42,8 @@ int Server::split(std::vector<std::string> *channels, std::string& chans, char d
 }
 
 int Server::IsChannelExist(std::string ChanName){
-    for(size_t i=0; i < channel.size(); i++){
-        if (channel[i].GetName() == ChanName){
+    for(size_t i=0; i < this->_channel.size(); i++){
+        if (this->_channel[i].GetName() == ChanName){
             return i + 1;
         }
     }
@@ -64,18 +64,18 @@ void Server::JOIN(void){
         size_t index = IsChannelExist(chans[i]);
         if (index <= 0){
             Channel Chan;
-            Client *membr = &client[currentClient];
+            Client *membr = &this->_client[this->_currentClient];
             Chan.SetName(chans[i]);
             Chan.GetMembers().push_back(*membr);
             Chan.GetOps().push_back(*membr);
-            channel.push_back(Chan);
+            this->_channel.push_back(Chan);
             std::cout<<Chan.GetName()<<std::endl;
         }
         else{
-            if (channel[index - 1].GetBoolPswd()){
-                if ( i < keys.size() && channel[index-1].GetPassword() == keys[i]){
-                    Client *membr = &client[currentClient];
-                    channel[index - 1].GetMembers().push_back(*membr);
+            if (this->_channel[index - 1].GetBoolPswd()){
+                if ( i < keys.size() && this->_channel[index-1].GetPassword() == keys[i]){
+                    Client *membr = &this->_client[this->_currentClient];
+                    this->_channel[index - 1].GetMembers().push_back(*membr);
                     std::cout<<"channel exist with correct password"<<std::endl;
                 }
                 else {
@@ -88,9 +88,9 @@ void Server::JOIN(void){
                 }
             }
             else {
-                Client *membr = &client[currentClient];
-                channel[index - 1].GetMembers().push_back(*membr);
-                std::cout<<"channel exist witout password : "<<channel[index - 1].GetName()<<std::endl;
+                Client *membr = &this->_client[this->_currentClient];
+                this->_channel[index - 1].GetMembers().push_back(*membr);
+                std::cout<<"channel exist witout password : "<<this->_channel[index - 1].GetName()<<std::endl;
             }
         }
     }
