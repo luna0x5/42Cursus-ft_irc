@@ -3,7 +3,6 @@ NAME	= ircserv
 HEADER	=	server/Server.hpp\
 			client/Client.hpp \
 			channel/Channel.hpp \
-
 			./Inc/numericalReplies.hpp\
 
 files	=	main.cpp \
@@ -15,7 +14,6 @@ files	=	main.cpp \
  			commands/Pass.cpp \
 			commands/Nick.cpp \
 			commands/User.cpp \
-
 			commands/mode/mode.cpp\
 
 obj		:= $(files:.cpp=.o)

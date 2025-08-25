@@ -10,7 +10,7 @@ class Client {
         std::string ip; // by inet_ntoa
         // int port;  // by ntohs
         std::string Buffer;
-        int port;  // by ntohs
+        // int port;  // by ntohs
         std::vector<std::string> cmds; //to store all cmds ends with /r/n
         bool registered; //default 0
         bool isPassed; // defaul 0
