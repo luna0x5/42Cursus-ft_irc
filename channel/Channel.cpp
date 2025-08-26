@@ -1,8 +1,10 @@
 #include "Channel.hpp"
 
-Channel::Channel():Name(""), Password("hello"), paswrd(1){
+Channel::Channel():Name("default"), j_inviteOnly(false), _restrectedTopic(true), _keyed(true), _userLimited(false)
+{
 
 }
+
 
 Channel::~Channel(){
 
@@ -24,12 +26,12 @@ void Channel::SetPassword(std::string& password){
     Password = password;
 }
 
-std::vector<Client>& Channel::GetMembers(void){
-return members;
+const std::map<std::string, Client >& Channel::GetMembers(void)const {
+return this->_members;
 }
 
-std::vector<Client>& Channel::GetOps(void){
-    return Ops;
+const std::map<std::string, Client >& Channel::GetOps(void)const {
+    return this->_Ops;
 }
 
 bool Channel::GetBoolPswd(void){

@@ -19,6 +19,8 @@
 #include "../channel/Channel.hpp"
 #include <algorithm>
 
+#include "numericalReplies.hpp"
+
 enum Commands {
     PASS_cmd,
     NICK_cmd,
@@ -42,11 +44,12 @@ class Server
             int                             _Socket_fd;
             std::map<int, Client>           _client;
             int                             _currentClient;
-            std::vector<Channel>            _channel;
+            std::map<std::string, Channel>  _channel;// TODO:
             std::vector<pollfd>             _poll_fds;
             std::vector<std::string>        _line;
             std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
 
+            std::string                     _serverName;
     public:
 
             Server(uint port , std::string password);
@@ -83,7 +86,10 @@ class Server
 
             void        USER(void);
 
+            void        MODE( void );
+
             void        Sender(std::string num);
+            void        sendErr(const reply code, const std::string cmdName);
 
 };
 

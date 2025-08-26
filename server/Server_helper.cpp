@@ -126,3 +126,16 @@ void Server::Sender(std::string num){
         std::cerr<<"failed send data "<<std::endl;
     }
 }
+
+void
+Server::sendErr(const reply code, const std::string cmdName)
+{
+    // thsi function append errors and replies to the client's buffer
+
+    std::string reply = ":" + this->_serverName 
+                        + " " + code.code + " "
+                        + this->_client[this->_currentClient].getnick()
+                        + " :" + code.msg + "\r\n";
+    
+    this->_client[this->_currentClient].AddBuffer(reply.c_str());
+}
