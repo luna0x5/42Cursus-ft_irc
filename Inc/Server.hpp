@@ -52,10 +52,12 @@ class Server
 
             std::string                     _serverName;
 
-            typedef std::map<std::string, Channel>::iterator it;
+            typedef std::map<std::string, Channel>::iterator ch_it;
+            typedef std::map<int, Client>::iterator          cl_it;
 
     public:
 
+        
             Server(uint port , std::string password);
             ~Server();
             void     start(void);
@@ -90,8 +92,9 @@ class Server
 
             void        USER(void);
 
-            void        MODE( void );
+            void         MODE( void );
             Channel*     channelExist( const std::string &name );
+            Client*      userExist( const std::string &nick);
 
             void        Sender(std::string num);
             void        sendReply( const std::string& reply);

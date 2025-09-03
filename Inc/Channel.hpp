@@ -42,11 +42,14 @@ class Channel {
         void                                    addModes( const char &mode );
         void                                    rmMode(const char &mode );
         void                                    addOps( Client &newOp );
+        void                                    rmOps( Client &newOp );
         
         void                                    triggerMode( const char flag , const char mode, const bool isMode, bool &toTrigger ) ;
-        
+        void                                    setCapacityLimit( const std::string  &num );
         void                                    incrementCount( void );
         void                                    decrementCount( void );
+
+        typedef std::map<std::string, Client >::const_iterator    const_op;
         
     public:
         
@@ -63,9 +66,10 @@ class Channel {
         void                                    set_i( char flag );
         void                                    set_t( char flag );
         void                                    set_k( char flag,  const std::string &pass);
-        void                                    set_o( char flag );
+        bool                                    set_o( char flag , Client &op );
+        void                                    set_l( char flag , const std::string &num );
 
-        void                                    setCapacityLimit( const std::string  &num );
+        void                                     broadcastReply(const std::string &reply);
 
         std::string& GetName(void);
         void SetName(std::string& name);

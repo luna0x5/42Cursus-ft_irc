@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/02 16:12:02 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/09/03 13:46:58 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@
 
 #define SERVERNAME                      "localhost"
 
-#define ERR_NEEDMOREPARAMS(nk, cm)      ":"  SERVERNAME " 461 " + nk + " " + cm + " :Not enough parameters\r\n"
-#define RPL_CHANNELMODEIS(nk, ch, md)   ":"  SERVERNAME " 324 " + nk + " " + ch + " " + md + "\r\n"
-#define RPL_CREATIONTIME(nk,ch,t)       ":"  SERVERNAME " 329 " + nk + " " + ch + " " + t + "\r\n"
-#define ERR_NOSUCHCHANNEL(nk, ch)       ":"  SERVERNAME " 403 " + nk + " " + ch + " :No such channel\r\n"
-#define ERR_UNKNOWNMODE(nk, md)         ":"  SERVERNAME " 472 " + nk + " " + md + " :is an unknown mode char to me\r\n"
-#define ERR_CHANOPRIVSNEEDED(nk, ch)    ":"  SERVERNAME " 482 " + nk + " " + ch + " :You're not a channel operator\r\n"
-#define ERR_NOTONCHANNEL(nk, ch)        ":"  SERVERNAME " 442 " + nk + " " + ch + " :You're not on that channel\r\n"
+#define ERR_NEEDMOREPARAMS(clnt, cmd)               ":"  SERVERNAME " 461 " + clnt + " " + cmd + " :Not enough parameters\r\n"
+#define RPL_CHANNELMODEIS(clnt, chnl, mod)          ":"  SERVERNAME " 324 " + clnt + " " + chnl + " " + mod + "\r\n"
+#define RPL_CREATIONTIME(clnt,chnl,t)               ":"  SERVERNAME " 329 " + clnt + " " + chnl + " " + t + "\r\n"
+#define ERR_NOSUCHCHANNEL(clnt, chnl)               ":"  SERVERNAME " 403 " + clnt + " " + chnl + " :No such channel\r\n"
+#define ERR_UNKNOWNMODE(clnt, mod)                  ":"  SERVERNAME " 472 " + clnt + " " + mod + " :is an unknown mode char to me\r\n"
+#define ERR_CHANOPRIVSNEEDED(clnt, chnl)            ":"  SERVERNAME " 482 " + clnt + " " + chnl + " :You're not a channel operator\r\n"
+#define ERR_NOTONCHANNEL(clnt, chnl)                ":"  SERVERNAME " 442 " + clnt + " " + chnl + " :You're not on that channel\r\n"
+#define ERR_NOSUCHNICK(clnt,nkname)                 ":"  SERVERNAME " 401 " + clnt + " " + nkname + " :No such nick\r\n"
+#define ERR_USERNOTINCHANNEL(clnt, nkname, chnl)    ":"  SERVERNAME " 441 " + clnt + " " + nkname + " " +chnl + " :They aren't on that channel\r\n" 
 
 char    validModeString( const char &mode );
 

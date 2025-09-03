@@ -63,8 +63,6 @@ Channel::is_Member( const std::string &name ) const
     return (it != this->_members.end()) ? true : false;
 }
 
-
-
 bool
 Channel::is_restrectedTopic( void )const
 {
@@ -111,6 +109,14 @@ Channel::addOps( Client &newOp )
 }
 
 void
+Channel::rmOps( Client &newOp )
+{
+    if (is_Op(newOp.getnick()))
+        this->_Ops.erase(newOp.getnick());
+
+}
+
+void
 Channel::setKey( const std::string &password )
 {
     this->Password = password;
@@ -122,7 +128,7 @@ Channel::setCapacityLimit( const std::string &num )
     std::stringstream   extract(num);
     int                 i;
 
-    if ((extract >> i) && extract.eof())
+    if (extract >> i)
     {
         if (i >= 0)
         {
@@ -155,6 +161,30 @@ Channel::set_k( char flag, const std::string &pass)
     else
         this->setKey("");
 
+}
+
+bool
+Channel::set_o( char flag, Client &op )
+{
+    std::string name = op.getnick();
+    const_op    oper = this->GetOps().find(name);
+
+    if (oper == this->GetOps().end())
+        return false;
+    if (flag == '+')
+        addOps(op);
+    else
+        rmOps(op);
+    return true;
+}
+
+void
+Channel::set_l( char flag , const std::string &num )
+{
+    if (flag == '+')
+        setCapacityLimit(num);
+    else
+        this->triggerMode('-', 'l', this->is_userLimited(), this->_l);
 }
 
 // void
@@ -203,4 +233,10 @@ std::time_t
 Channel::getTime( void )const
 {
     return this->_creationTime;
+}
+
+void
+Channel::broadcastReply(const std::string &reply)
+{
+    
 }
