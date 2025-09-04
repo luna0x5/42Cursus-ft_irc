@@ -64,11 +64,11 @@ class Channel {
         std::string                              getModes( void ) const;
         std::time_t                              getTime( void )const;
 
-        void                                    set_i( char flag );
-        void                                    set_t( char flag );
-        void                                    set_k( char flag,  const std::string &pass);
+        void                                    set_i( char flag , std::string &modesbuff);
+        void                                    set_t( char flag , std::string &modesbuff);
+        void                                    set_k( char flag,  const std::string &pass, std::string &modesbuff);
         bool                                    set_o( char flag , Client &op );
-        void                                    set_l( char flag , const std::string &num );
+        void                                    set_l( char flag , const std::string &num , std::string &modesbuff);
 
         void                                     broadcastReply(const std::string &reply);
 
