@@ -20,6 +20,7 @@ void Server::USER(void){
 	this->_client[this->_currentClient].SitUsername(this->_line[2]);
 	this->_client[this->_currentClient].setrealname(this->_line[1]);
 	this->_client[this->_currentClient].setreg();
+	this->_client[this->_currentClient].setFd(this->_currentClient);
 	if (this->_client[this->_currentClient].getreg() == 3){
 		Sender("001 ");
 		return;

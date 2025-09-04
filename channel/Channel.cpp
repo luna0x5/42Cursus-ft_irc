@@ -167,7 +167,7 @@ bool
 Channel::set_o( char flag, Client &op )
 {
     std::string name = op.getnick();
-    const_op    oper = this->GetOps().find(name);
+    constmap_it    oper = this->GetOps().find(name);
 
     if (oper == this->GetOps().end())
         return false;
@@ -238,5 +238,9 @@ Channel::getTime( void )const
 void
 Channel::broadcastReply(const std::string &reply)
 {
-    
+    std::map<std::string, Client>   members = this->GetMembers();
+    constmap_it                     clients = members.begin();
+
+    for (; clients !=  members.end(); clients++)
+        Server::sendReply(clients->second.getFd(), )
 }

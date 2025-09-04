@@ -75,3 +75,16 @@ void Client::setrealname(std::string real){
 std::string Client::getrealname(void){
     return this->realname;
 }
+
+
+void
+Client::setFd(int fd)
+{
+    this->_fd = fd;
+}
+
+int
+Client::getFd( void ) const
+{
+    return this->_fd;
+}

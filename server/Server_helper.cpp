@@ -129,10 +129,10 @@ void Server::Sender(std::string num){
 }
 
 void
-Server::sendReply(const std::string& reply)
+Server::sendReply(int fd, const std::string& reply)
 {
     
-    int         bytes = send(this->_currentClient, reply.c_str(), reply.length(), 0);
+    int         bytes = send(fd, reply.c_str(), reply.length(), 0);
     if(bytes < 0)
         std::cerr<<"Error: Failed send data !"<<std::endl;
 }

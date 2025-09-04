@@ -49,7 +49,8 @@ class Channel {
         void                                    incrementCount( void );
         void                                    decrementCount( void );
 
-        typedef std::map<std::string, Client >::const_iterator    const_op;
+        typedef std::map<std::string, Client >::const_iterator    constmap_it;
+        typedef std::map<std::string, Client >::iterator           map_it;
         
     public:
         

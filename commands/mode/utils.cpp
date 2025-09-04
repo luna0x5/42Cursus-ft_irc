@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:36:25 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/02 16:14:02 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/09/04 10:46:40 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@ std::vector<std::string>    ftSplit(const std::string& str, const char del)
     return tokens;
 }
 
-char    validModeString( const char &mode )
+char    validModeString( const std::string &mode )
 {
-    std::string validModes("itkol");
-    if (validModes.find(mode) == std::string::npos)
-         return mode;
+    std::string validModes("-+itkol");
 
-    return (0);
+    for (size_t i = 0; i < mode.length(); i++)
+        if (validModes.find(mode[i]) == std::string::npos)
+            return mode[i];
+
+    return (-1);
 }

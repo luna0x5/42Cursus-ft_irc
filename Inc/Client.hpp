@@ -19,6 +19,7 @@ class Client {
         std::string nickname;
         std::string username;
         std::string realname;
+        int         _fd;
         
     public:
         std::string& getBuffer(void);
@@ -39,6 +40,9 @@ class Client {
         void setuser(std::string user);
         void setrealname(std::string real);
         std::string getrealname(void);
+
+        void            setFd(const int fd);
+        int             getFd( void ) const;
 
 };
 

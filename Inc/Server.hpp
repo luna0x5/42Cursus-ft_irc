@@ -97,7 +97,7 @@ class Server
             Client*      userExist( const std::string &nick);
 
             void        Sender(std::string num);
-            void        sendReply( const std::string& reply);
+            void        sendReply(int fd,  const std::string& reply);
 
 };
 
