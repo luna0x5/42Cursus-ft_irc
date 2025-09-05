@@ -77,7 +77,6 @@ class Server
     
         //     bool         IsChannelExist(std::string ChanName);
             int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
-            void        checkErr(const int res, const int err, const char *msg);
 
         //     int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
         //     void        JOIN(void);
@@ -92,12 +91,14 @@ class Server
 
             void        USER(void);
 
-            void         MODE( void );
-            Channel*     channelExist( const std::string &name );
-            Client*      userExist( const std::string &nick);
+            void                checkErr(const int res, const int err, const char *msg);
+            void                sendReply(int fd,  const std::string& reply);
+            Channel*            channelExist( const std::string &name );
+            Client*             userExist( const std::string &nick);
+            const std::string   &parseMode();
+            void                MODE( void );
 
             void        Sender(std::string num);
-            void        sendReply(int fd,  const std::string& reply);
 
 };
 
