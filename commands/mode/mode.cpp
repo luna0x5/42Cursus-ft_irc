@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/05 18:02:51 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/09/08 12:52:55 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,9 @@ Server::parseMode()
                 RPL_CREATIONTIME(nick, chName, time);
     }
 
-    if (!channel->is_Op(nick))
-        return ERR_CHANOPRIVSNEEDED(nick, chName);
-    
     int count = 2;
     std::string modes("lko");
+
     for (size_t i = 0; i < this->_line[3].length(); i++)
     {
         if (modes.find(this->_line[3][i]))
@@ -70,11 +68,13 @@ Server::parseMode()
                 && (int)size < count + 1)
                 return  ERR_NEEDMOREPARAMS(nick, "MODE");
         }
+        else if (validModeString(this->_line[3][i]) == -1)
+            return ERR_UNKNOWNMODE(nick, this->_line[3][i]);
+        
     }
 
-    char        c = validModeString(this->_line[3]);
-    if (c != -1)
-        return ERR_UNKNOWNMODE(nick, c);
+    if (!channel->is_Op(nick))
+        return ERR_CHANOPRIVSNEEDED(nick, chName);
 
     return "";
 }
@@ -88,30 +88,27 @@ Server::MODE( void )
     if (!pareseReply.empty())
         return sendReply(this->_currentClient, pareseReply);
 
-    // if (!channel->is_Member(nick))
-    //     return sendReply(fd, ERR_NOTONCHANNEL(nick, chName));
     int         fd = this->_currentClient;
     std::string nick = this->_client[fd].getnick();
     size_t      size = this->_line.size();
     std::string modestring(this->_line[3]);
-
-        
-
+    Channel     *channel = channelExist(this->_line[1]);
     char        flag = '+';
-    std::string validmodes;
-    std::string validargs;
     int         count = 2;
-
-    //parse mode 
+    bool        f = false;
     
     for (size_t i = 0; i < modestring.length(); i++)
     {
-
+        while (modestring[i] && (modestring[i] == '+' || modestring[i] == '-'))
+        {
+            flag = modestring[i];
+            i++;
+            f = true;
+        }
+        if (f)
+            channel->changedModes+= flag;
         switch (modestring[i])
         {
-            case '+': flag = '+'; break;
-            case '-': flag = '-'; break;
-            
             case 'i': channel->set_i(flag); break;
             case 't': channel->set_t(flag); break;
             case 'k':
@@ -119,11 +116,7 @@ Server::MODE( void )
 
                     count++;
                     if ((int)size >= count + 1)
-                    {
                         channel->set_k(flag, this->_line[count]);
-                        validmodes += "k";
-                        
-                    }
                     break;
                 }
             case 'o':
@@ -136,7 +129,7 @@ Server::MODE( void )
                         Client  *op = this->userExist(this->_line[count]);
                         if (op)
                             if (!channel->set_o(flag, *op))
-                                sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], chName));
+                                sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], channel->GetName()));
                          else
                                 sendReply(fd, ERR_NOSUCHNICK(nick, this->_line[count]));
                     }
@@ -151,8 +144,6 @@ Server::MODE( void )
                         channel->set_l(flag, this->_line[count]);
                 }
                 break;
-        
-            default:
         
         }
         

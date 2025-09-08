@@ -18,16 +18,16 @@ class Channel {
         std::map<std::string, Client>           _members;
         std::string                             _modes;
         std::map<std::string, Client>           _Ops;
-
+        
         bool                                    _i;
         bool                                    _t;
         bool                                    _k;
         bool                                    _l;
-
+        
         
         const std::map<std::string, Client >&    GetMembers(void) const;
         const std::map<std::string, Client >&    GetOps(void) const;
-
+        
         
         int                                     getCapacityLimit( void ) const;
         uint                                    getMembersCount( void ) const;
@@ -48,11 +48,11 @@ class Channel {
         void                                    setCapacityLimit( const std::string  &num );
         void                                    incrementCount( void );
         void                                    decrementCount( void );
-
+        
         typedef std::map<std::string, Client >::const_iterator    constmap_it;
         typedef std::map<std::string, Client >::iterator           map_it;
         
-    public:
+        public:
         
         Channel();
         Channel( const std::string name );
@@ -60,18 +60,20 @@ class Channel {
         
         bool                                     is_Op( const std::string &name ) const;
         bool                                     is_Member( const std::string &name ) const;
-
+        
         std::string                              getModes( void ) const;
         std::time_t                              getTime( void )const;
-
-        void                                    set_i( char flag , std::string &modesbuff);
-        void                                    set_t( char flag , std::string &modesbuff);
-        void                                    set_k( char flag,  const std::string &pass, std::string &modesbuff);
+        
+        void                                    set_i( char flag );
+        void                                    set_t( char flag );
+        void                                    set_k( char flag,  const std::string &pass);
         bool                                    set_o( char flag , Client &op );
-        void                                    set_l( char flag , const std::string &num , std::string &modesbuff);
-
-        void                                     broadcastReply(const std::string &reply);
-
+        void                                    set_l( char flag , const std::string &num);
+        
+        std::string                             args;
+        std::string                             changedModes;
+        void                                    broadcastReply(const std::string &reply);
+        
         std::string& GetName(void);
         void SetName(std::string& name);
         std::string& GetPassword(void);
@@ -79,6 +81,6 @@ class Channel {
         // const bool getModes( void ) const;
         // const bool getModes( void ) const;
         //get username of ops
-};
-
-#endif
+    };
+    
+    #endif

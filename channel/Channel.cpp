@@ -120,6 +120,7 @@ void
 Channel::setKey( const std::string &password )
 {
     this->Password = password;
+    this->args+= password + " ";
 }
 
 void
@@ -159,8 +160,7 @@ Channel::set_k( char flag, const std::string &pass)
     if (flag == '+')
         this->setKey(pass);
     else
-        this->setKey("");
-
+        this->setKey("*");
 }
 
 bool
@@ -198,11 +198,13 @@ Channel::triggerMode( const char flag , const char mode, const bool isMode, bool
 {
     if (flag == '+' && !isMode)
     {
+        this->changedModes+= mode;
         this->addModes(mode);
         toTrigger = true;
     }
     else if (flag == '-' && isMode)
     {
+        this->changedModes+= mode;;
         this->rmMode(mode);
         toTrigger = false;
     }
