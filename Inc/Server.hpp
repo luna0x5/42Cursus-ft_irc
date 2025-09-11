@@ -62,7 +62,8 @@ class Server
             ~Server();
             void     start(void);
             
-            static void                sendReply(int fd,  const std::string& reply);
+            static void        sendReply(int fd,  const std::string& reply);
+            static void        Handler(int sig);
 
     private :
 
@@ -80,7 +81,7 @@ class Server
         //     bool         IsChannelExist(std::string ChanName);
             int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
 
-        //     int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
             void        JOIN(void);
 
             void        PASS(void);
@@ -99,7 +100,12 @@ class Server
             const std::string   parseMode( void );
             void                MODE( void );
 
+            void        cleaner(void);
+            void        OneClean(void);
+            bool        findit(pollfd p);
+
             void        Sender(std::string num);
+            void        sendErr(const reply code, const std::string cmdName);
 
 };
 

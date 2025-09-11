@@ -1,6 +1,5 @@
 #include "Server.hpp"
 
-
 bool Server::AlreadyInUse(void){
 	std::map<int, Client>::iterator it = this->_client.begin();
 	for(size_t i = 0; i < this->_client.size(); i++){
@@ -39,21 +38,24 @@ bool Server::Nickparse(void){
 
 void Server::NICK(void){
 	if (!this->_client[this->_currentClient].getisPassed()){
-		std::cerr<<"ERR_PASSWDMISMATCH (464"<<std::endl;
+		sendErr(ERR_PASSWDMISMATCH, "");
+		// OneClean();
 		return;
 	}
 	if (!AlreadyInUse()){
-		std::cerr<<"ERR_NICKNAMEINUSE"<<std::endl;
+		sendErr(ERR_NICKNAMEINUSE, "");
+		// OneClean();
 		return;
 	}
 	if (!Nickparse()){
-		std::cerr<<"432 ERR_ERRONEUSNICKNAME"<<std::endl;
+		sendErr(ERR_ERRONEUSNICKNAME, "");
+		// OneClean();
 		return;
 	}
 	this->_client[this->_currentClient].setnick(this->_line[1]);
 	this->_client[this->_currentClient].setreg();
 	if (this->_client[this->_currentClient].getreg() == 3){
-		Sender("001 ");
+		sendErr(RPL_WELCOME, "");
 		return;
 	}
 	// std::cout<<"nickname : "<< this->_client[this->_currentClient].getnick()<<std::endl;

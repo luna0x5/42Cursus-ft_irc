@@ -14,6 +14,7 @@ files	=	main.cpp \
  			commands/Pass.cpp \
 			commands/Nick.cpp \
 			commands/User.cpp \
+			Inc/numericalReplies.cpp \
 			commands/mode/mode.cpp\
 			commands/mode/utils.cpp\
 

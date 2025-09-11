@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
+/*   By: youssra-chagri <youssra-chagri@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/10 13:05:18 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/09/11 10:42:21 by youssra-cha      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ Server::MODE( void )
             i++;
             f = true;
         }
-        if (f)
+        if (f || i == 0)
             channel->changedModes+= flag;
         switch (modestring[i])
         {

@@ -1,5 +1,13 @@
 #include "Client.hpp"
 
+Client::Client():registered(0),isPassed(0), reg_done(0){
+
+}
+
+Client::~Client(){
+    
+}
+
 std::string& Client::getBuffer(void){
     return (this->Buffer);
 }
@@ -24,8 +32,7 @@ void Client::extract_cmds(void){
         Buffer.erase(0, pos + 2);
     }
 } // if the \r\n exactement in the end what find will return in buffer if it's empty
-
-std::string& Client::GetUsername(void){
+ std::string& Client::GetUsername(void){
     return username;
 }
 

@@ -14,5 +14,8 @@ int main(int ac, char **av) {
     }
     Server test(port, av[2]);
     // test.parse_cmd(":nick!user@host JOIN #channel :Hello everyone!");
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGINT, Server::Handler);
+    signal(SIGQUIT, Server::Handler);
     test.start();
 }

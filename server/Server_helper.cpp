@@ -7,7 +7,7 @@ Server::handle_new_connections(int Socket_fd)
     sockaddr_in clientAdress;
     socklen_t   len = sizeof(clientAdress);
 
-    int         new_socket = accept(Socket_fd, (struct sockaddr *) &clientAdress, &len);//accepting the incoming request    
+    int         new_socket = accept(Socket_fd, (struct sockaddr *) &clientAdress, &len);//accepting the incoming request 
     checkErr(new_socket, -1, "failed to accept new connection!");
     std::cout << "client connected" << std::endl;
 
@@ -79,8 +79,13 @@ void Server::commands_handler(){
         case 8:
             std::cout<<"INVITE"<<std::endl;
             break;
-        default:
-            std::cout<<"UNKNOWN"<<std::endl;
+        default:{
+            std::cout<<"UNKNOWN : ";
+                for(size_t i=0; i< _line.size(); i++){
+                std::cout<< this->_line[i];
+                }
+                std::cout<<std::endl;
+        }
     }
     this->_line.clear();
 }
@@ -120,9 +125,33 @@ void Server::parse_cmd(std::string cmd){
     commands_handler();
 }
 
-void Server::Sender(std::string num){
-    std::string to_client   = ":localhost " + num + this->_client[this->_currentClient].getnick() + " :Welcome to our server\r\n";
-    int         bytes       = send(this->_currentClient, to_client.c_str(), to_client.length(), 0);
+// void Server::Sender(std::string num){
+//     std::string to_client   = ":localhost" + num + this->_client[this->_currentClient].getnick() + " :Welcome to our server\r\n";
+//     int         bytes       = send(this->_currentClient, to_client.c_str(), to_client.length(), 0);
+//     if(bytes < 0){
+//         std::cerr<<"failed send data "<<std::endl;
+//     }
+// }
+
+void Server::cleaner(void){
+    for(size_t i=0; i < this->_poll_fds.size(); i++){
+        close(this->_poll_fds[i].fd);
+        _client.erase(this->_poll_fds[i].fd);
+        this->_poll_fds.erase(this->_poll_fds.begin() + i);
+        i--;
+    }
+    exit(1);
+}
+
+void Server::sendErr(const reply code, const std::string cmdName){
+    // thsi function append errors and replies to the client's buffer
+
+    std::string reply = ":localhost " 
+                         + code.code + " "
+                        + cmdName + " "
+                        + this->_client[this->_currentClient].getnick()
+                        + " :" + code.msg + "\r\n";
+    size_t bytes = send(this->_currentClient, reply.c_str(), reply.length(), 0);
     if(bytes < 0){
         std::cerr<<"failed send data "<<std::endl;
     }
@@ -135,4 +164,21 @@ Server::sendReply(int fd, const std::string& reply)
     int         bytes = send(fd, reply.c_str(), reply.length(), 0);
     if(bytes < 0)
         std::cerr<<"Error: Failed send data !"<<std::endl;
+}
+
+bool Server::findit(pollfd p){
+    return (p.fd == this->_currentClient);
+}
+
+void        Server::OneClean(void){
+    // shutdown(this->_currentClient, SHUT_RDWR);
+    close(this->_currentClient);
+    this->_client.erase(this->_currentClient);
+    for(size_t i=0; i < this->_poll_fds.size(); i++){
+        if (this->_poll_fds[i].fd == this->_currentClient){
+            this->_poll_fds.erase(this->_poll_fds.begin() + i);
+            break;
+        }
+    }
+
 }

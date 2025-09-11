@@ -22,6 +22,8 @@ class Client {
         int         _fd;
         
     public:
+        Client();
+        ~Client();
         std::string& getBuffer(void);
         std::vector<std::string>& getCmds(void);
         bool getregistered(void);

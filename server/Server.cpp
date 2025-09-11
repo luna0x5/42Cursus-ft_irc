@@ -2,6 +2,8 @@
 #include "Channel.hpp"
 
 
+volatile sig_atomic_t flag = 0;
+
 Server::Server(uint port , std::string password): _port(port), _password(password)
 {
     initCmds();
@@ -9,7 +11,7 @@ Server::Server(uint port , std::string password): _port(port), _password(passwor
 
 Server::~Server()
 {
-    //destroy all pollfd
+   cleaner();
 }
 
 int 
@@ -19,6 +21,7 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
 
     this->_Socket_fd = socket(AF_INET, SOCK_STREAM, 0);// setting server socket with tcp connection and ipv4 
     checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
+    //check if the errno == EINTR
 
     // int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
     // checkErr(flag, -1, "Error: Failed to get server socket status flag!");
@@ -53,7 +56,7 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
 void
 Server::running_server(int Socket_fd)
 {
-    while(true)
+    while(!flag)
     {
         int monitor = poll(this->_poll_fds.data(), this->_poll_fds.size(), -1);//poll to monitor multiple fds without i/o blocking
         checkErr(monitor, -1, "Error : Failed poll");
@@ -78,11 +81,16 @@ Server::running_server(int Socket_fd)
                     int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer), 0);
                     if (bytes <= 0)
                     {
+                        //     if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                        //     std::cout<<"no data"<<std::endl;
+                        //     }
+                        // else {
                         close(this->_poll_fds[i].fd);
-                        std::cout << "client : " <<this->_poll_fds[i].fd << " is disconnected!" <<std::endl;
+                        std::cout<<  " -> client : " <<this->_poll_fds[i].fd << " is disconnected!" <<std::endl;
                         _client.erase(this->_poll_fds[i].fd);
                         this->_poll_fds.erase(this->_poll_fds.begin() + i);
                         i--;
+                        // }
                     }
                     else
                     {
@@ -95,6 +103,7 @@ Server::running_server(int Socket_fd)
             }
         }
     }
+    cleaner();
 }
 
 void Server::start(){
@@ -116,4 +125,6 @@ Server::checkErr(const int res, const int err, const char *msg)
     return ;
 }
 
-//signals :
+void Server::Handler(int){
+    flag = 1;
+}
