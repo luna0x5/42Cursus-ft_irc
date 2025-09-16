@@ -22,6 +22,8 @@ class Client {
         int         _fd;
         
     public:
+        Client() : _fd(-1) {} // needed somewhere in the code
+        Client(int fd) : _fd(fd) {} // needs it
         std::string& getBuffer(void);
         std::vector<std::string>& getCmds(void);
         bool getregistered(void);

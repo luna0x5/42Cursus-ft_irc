@@ -32,6 +32,7 @@ enum Commands {
     TOPIC_cmd,
     KICK_cmd,
     INVITE_cmd,
+    PRIVMSG_cmd,
     UNKNOWN_cmd
 };
 
@@ -76,28 +77,29 @@ class Server
             int         GetCmds(void);
     
         //     bool         IsChannelExist(std::string ChanName);
-            int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
+            // int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
 
         //     int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
         //     void        JOIN(void);
 
             void        PASS(void);
-
+            void        USER(void);
             void        NICK(void);
+
             bool        Nickparse(void);
             bool        firstChar(void);
             bool        AlreadyInUse(void);
             bool        otherChar(void);
 
-            void        USER(void);
-
+            void        PRIVMSG(Server &server, Client &client, const std::vector<std::string> &args); // still need to know the args ?
+            
             void                checkErr(const int res, const int err, const char *msg);
             void                sendReply(int fd,  const std::string& reply);
-            Channel*            channelExist( const std::string &name );
-            Client*             userExist( const std::string &nick);
-            const std::string   &parseMode();
-            void                MODE( void );
-
+            // Channel*            channelExist( const std::string &name );
+            // Client*             userExist( const std::string &nick);
+            // const std::string   &parseMode();
+            // void                MODE( void );
+            void OneClean(void);
             void        Sender(std::string num);
 
 };

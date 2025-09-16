@@ -6,33 +6,61 @@
 #    By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/26 02:35:14 by hmoukit           #+#    #+#              #
-#    Updated: 2025/06/26 15:51:08 by hmoukit          ###   ########.fr        #
+#    Updated: 2025/09/14 17:23:47 by hmoukit          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = server
+NAME	= ircserv
 
-SRCS = ./miniServer/miniServer.cpp ./auth/client.cpp main.cpp
+HEADER	=	./Inc/Server.hpp        \
+			./Inc/Client.hpp  \
+			./Inc/Channel.hpp \
+			./Inc/numericalReplies.hpp \
 
-OBJS = $(SRCS:.cpp=.o)
+files	=	main.cpp \
+			server/Server.cpp \
+			server/Server_helper.cpp \
+			client/Client.cpp \
+			channel/Channel.cpp \
+			commands/privmsg.cpp \
+ 			commands/Pass.cpp \
+			commands/Nick.cpp \
+			commands/User.cpp \
+			# Inc/numericalReplies.cpp \
+			# commands/Join.cpp \
+			# commands/mode/mode.cpp\
+			# commands/mode/utils.cpp
 
-CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98
+obj		:= $(files:.cpp=.o)
 
-all: $(NAME)
+# Cpp		= c++
+Cpp = g++
 
-$(NAME): $(OBJS)
-	$(CPP) $(CPPFLAGS) $(OBJS) -o $(NAME)
-	
-%.o: %.cpp miniServer.hpp ./auth/client.hpp
-	$(CPP) $(CPPFLAGS) -c -o $@ $<
+FLAGS	=  -Wall -Wextra -Werror -std=c++98  -I./Inc
+
+all : $(NAME)
+
+
+$(NAME) : $(obj)
+	@$(Cpp) $(FLAGS) $(obj) $(LIBRARY) -o $(NAME)
+
+%.o: %.cpp $(HEADER)
+	$(Cpp) $(FLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+		rm -rf $(obj)
 
 fclean: clean
-	rm -f $(NAME)
+		rm -rf $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+commit: fclean
+	git add .
+	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"  
+
+push: fclean
+	git add .
+	git status
+	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"
+	git push

@@ -12,43 +12,85 @@ Server::~Server()
     //destroy all pollfd
 }
 
-int 
-Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
+
+int Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
 {
     int err;
 
-    this->_Socket_fd = socket(AF_INET, SOCK_STREAM, 0);// setting server socket with tcp connection and ipv4 
-    checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
+    this->_Socket_fd = socket(AF_INET, SOCK_STREAM, 0); // TCP + IPv4
+    checkErr(this->_Socket_fd, -1, "Error: Failed to create server socket!");
 
-    // int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
-    // checkErr(flag, -1, "Error: Failed to get server socket status flag!");
+    // get current flags
+    int flags = fcntl(this->_Socket_fd, F_GETFL, 0);
+    checkErr(flags, -1, "Error: Failed to get socket flags!");
 
-    err = fcntl(this->_Socket_fd, F_SETFL | O_NONBLOCK);// setting the socket to non blocking for concurrency
-    checkErr(err, -1, "Error: Failed to set socket flag!");
+    // set non-blocking mode
+    err = fcntl(this->_Socket_fd, F_SETFL, flags | O_NONBLOCK);
+    checkErr(err, -1, "Error: Failed to set socket non-blocking!");
 
     int opt = 1;
-    err = setsockopt(this->_Socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));// Allowing multiple sockets to bind to the same address and port
+    err = setsockopt(this->_Socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     checkErr(err, -1, "Error: Failed to set socket option!");
 
-    sockaddr_in server_addr;// ipv4 socket address
+    sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(this->_port);// converting port to network byte order 
-    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);// inaddr to listen for all connections
+    server_addr.sin_port = htons(this->_port);
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    err = bind(_Socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));// naming the socket
+    err = bind(this->_Socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));
     checkErr(err, -1, "Error: Failed to bind!");
-    
-    err = listen(_Socket_fd, SOMAXCONN);// marking the socket as passive (tcp)
+
+    err = listen(this->_Socket_fd, SOMAXCONN);
     checkErr(err, -1, "Error: Failed to listen!");
-  
-    // preparing listening socket to be monitored by poll for new incoming connections
+
+    // Add server socket to poll list
     pollfd listen_fd;
     listen_fd.fd = this->_Socket_fd;
     listen_fd.events = POLLIN;
-    this-> _poll_fds.push_back(listen_fd);
+    this->_poll_fds.push_back(listen_fd);
 
-    return(this->_Socket_fd);
+    return this->_Socket_fd;
 }
+
+
+// This is MacOs compatible
+// int 
+// Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
+// {
+//     int err;
+
+//     this->_Socket_fd = socket(AF_INET, SOCK_STREAM, 0);// setting server socket with tcp connection and ipv4 
+//     checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
+
+//     // int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
+//     // checkErr(flag, -1, "Error: Failed to get server socket status flag!");
+
+//     err = fcntl(this->_Socket_fd, F_SETFL | O_NONBLOCK);// setting the socket to non blocking for concurrency
+//     checkErr(err, -1, "Error: Failed to set socket flag!");
+
+//     int opt = 1;
+//     err = setsockopt(this->_Socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));// Allowing multiple sockets to bind to the same address and port
+//     checkErr(err, -1, "Error: Failed to set socket option!");
+
+//     sockaddr_in server_addr;// ipv4 socket address
+//     server_addr.sin_family = AF_INET;
+//     server_addr.sin_port = htons(this->_port);// converting port to network byte order 
+//     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);// inaddr to listen for all connections
+
+//     err = bind(_Socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));// naming the socket
+//     checkErr(err, -1, "Error: Failed to bind!");
+    
+//     err = listen(_Socket_fd, SOMAXCONN);// marking the socket as passive (tcp)
+//     checkErr(err, -1, "Error: Failed to listen!");
+  
+//     // preparing listening socket to be monitored by poll for new incoming connections
+//     pollfd listen_fd;
+//     listen_fd.fd = this->_Socket_fd;
+//     listen_fd.events = POLLIN;
+//     this-> _poll_fds.push_back(listen_fd);
+
+//     return(this->_Socket_fd);
+// }
 
 void
 Server::running_server(int Socket_fd)
@@ -114,6 +156,18 @@ Server::checkErr(const int res, const int err, const char *msg)
     if (res == err)
         throw std::runtime_error(msg);
     return ;
+}
+
+void        Server::OneClean(void){
+    // shutdown(this->_currentClient, SHUT_RDWR);
+    close(this->_currentClient);
+    this->_client.erase(this->_currentClient);
+    for(size_t i=0; i < this->_poll_fds.size(); i++){
+        if (this->_poll_fds[i].fd == this->_currentClient){
+            this->_poll_fds.erase(this->_poll_fds.begin() + i);
+            break;
+        }
+    }
 }
 
 //signals :

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/08 12:11:20 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/09/14 17:23:14 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@
 #define ERR_NOSUCHNICK(clnt,nkname)                 ":"  SERVERNAME " 401 " + clnt + " " + nkname + " :No such nick\r\n"
 #define ERR_USERNOTINCHANNEL(clnt, nkname, chnl)    ":"  SERVERNAME " 441 " + clnt + " " + nkname + " " +chnl + " :They aren't on that channel\r\n" 
 
-char    validModeString( char mode );
+// char    validModeString( char mode );
 
 // void sendServerRpl(int const client_fd, std::string client_buffer); //This function takes a client file descriptor and a formatted message buffer, then sends the message to the appropriate client.
