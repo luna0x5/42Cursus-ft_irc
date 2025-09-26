@@ -43,17 +43,20 @@ void Server::NICK(void){
 	// std::string nick = this->_client[this->_currentClient].getnick();
 
 	if (!this->_client[this->_currentClient].getisPassed()){
-		sendReply(fd, ERR_PASSWDMISMATCH);
+		sendReply(fd, ERR_PASSWDMISMATCH(this->_line[1]));
 		// OneClean();
 		return;
 	}
+	std::string	nick("*");
+	if (this->_client[fd].getreg() == 3)
+		nick = this->_client[fd].getnick();
 	if (!AlreadyInUse()){
-		sendReply(fd, ERR_NICKNAMEINUSE);
+		sendReply(fd, ERR_NICKNAMEINUSE(nick, this->_line[1]));
 		// OneClean();
 		return;
 	}
 	if (!Nickparse()){
-		sendReply(fd, ERR_ERRONEUSNICKNAME);
+		sendReply(fd, ERR_ERRONEUSNICKNAME(nick, this->_line[1]));
 		// OneClean();
 		return;
 	}

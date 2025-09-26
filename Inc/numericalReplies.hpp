@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/26 14:25:03 by yuury            ###   ########.fr       */
+/*   Updated: 2025/09/26 16:19:33 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@
 #define ERR_BANNEDFROMCHAN(clnt, chnl)              ":" SERVERNAME " 474 " + clnt + " " + chnl + " :Cannot join because you are banned\r\n"
 #define ERR_BADCHANNELKEY(clnt, chnl)               ":" SERVERNAME " 475 " + clnt + " " + chnl + " :Incorrect channel key\r\n"
 #define ERR_NONICKNAMEGIVEN(clnt)                   ":" SERVERNAME " 431 " + clnt + " :No nickname provided\r\n"
-#define ERR_ERRONEUSNICKNAME                        ":" SERVERNAME " 432 :Erroneous nickname\r\n"
-#define ERR_NICKNAMEINUSE                           ":" SERVERNAME " 433 :Nickname is already in use\r\n"//TODO: Incorrect format
+#define ERR_ERRONEUSNICKNAME(clnt,  nick)           ":" SERVERNAME " 432 " + clnt + " " + nick + " :Erroneous nickname\r\n"
+#define ERR_NICKNAMEINUSE(clnt,  nick)              ":" SERVERNAME " 433 " + clnt + " " + nick + " :Nickname is already in use\r\n"
 #define ERR_ALREADYREGISTERED(clnt)                 ":" SERVERNAME " 462 " + clnt + " :You are already registered\r\n"
-#define ERR_PASSWDMISMATCH                          ":" SERVERNAME " 464 :Incorrect password\r\n"//TODO: Incorrect format
+#define ERR_PASSWDMISMATCH(clnt)                    ":" SERVERNAME " 464 " + clnt + " :Incorrect password\r\n"
 #define ERR_INVITEONLYCHAN(clnt, chnl)              ":" SERVERNAME " 473 " + clnt + " " + chnl + " :Invite only channel\r\n"
 #define ERR_CHANNELISFULL(clnt, chnl)               ":" SERVERNAME " 471 " + clnt + " " + chnl + " :Channel is full\r\n"
 

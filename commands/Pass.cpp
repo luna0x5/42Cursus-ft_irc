@@ -13,7 +13,7 @@ void Server::PASS(void){
 		return ;
 	}
 	if ( _line[1] != this->_password){
-		sendReply(fd, ERR_PASSWDMISMATCH);
+		sendReply(fd, ERR_PASSWDMISMATCH(std::string("*")));
 		return ;
 	}
 	this->_client[this->_currentClient].setisPassed(1);

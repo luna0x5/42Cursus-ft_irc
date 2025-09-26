@@ -1,0 +1,17 @@
+NICK DASD DSSD ASDA SADA
+USER LALA
+:localhost 461 DASD USER :Not enough parameters
+NICK LALA
+:localhost 001 LALA :Welcome
+########################################################
+NICK //TODO: EMPTY NICK PASSES AS IT SHOULD NOT
+USER DFDS SDFDS DSFSD DSF
+:localhost 001 lalakoka :Welcome
+PASS lalakoka
+NICK 
+USER DFDS SDFDS DSFSD DSF
+:localhost 001 lalakoka :Welcome
+NICK ..
+:localhost 432 lalakoka .. :Erroneous nickname
+TODO: IT USED THE PASSWORD AS A NICKNAME
+############################################################

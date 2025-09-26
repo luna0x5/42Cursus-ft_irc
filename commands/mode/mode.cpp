@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/26 14:24:15 by yuury            ###   ########.fr       */
+/*   Updated: 2025/09/26 14:39:28 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void
 Server::MODE( void )
 {
     int         fd = this->_currentClient;
-    if (this->_client[fd].getregistered() == false)
+    if (this->_client[fd].getreg() != 3)
         return sendReply(fd, ERR_NOTREGISTERED(std::string("*")));
     
     std::string pareseReply = this->parseMode();

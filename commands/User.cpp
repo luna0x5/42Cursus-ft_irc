@@ -4,7 +4,7 @@ void Server::USER(void){
 	int	fd = this->_currentClient;
 	// std::cout<<std::endl;
 	if (!this->_client[this->_currentClient].getisPassed()){
-		sendReply(fd, ERR_PASSWDMISMATCH);
+		sendReply(fd, ERR_PASSWDMISMATCH(std::string("*")));
 		return;
 	}
 	if (this->_client[this->_currentClient].getregistered()){
