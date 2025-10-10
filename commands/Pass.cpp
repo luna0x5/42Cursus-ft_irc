@@ -2,9 +2,9 @@
 
 void Server::PASS(void){
 	int fd = this->_currentClient;
-	std::string nick = this->_client[this->_currentClient].getnick();
+	std::string nick = this->_client[fd].getnick();
 
-	if (this->_client[this->_currentClient].getregistered() || this->_client[this->_currentClient].getisPassed()){
+	if (this->_client[fd].getisPassed()){
 		sendReply(fd, ERR_ALREADYREGISTERED(nick));
 		return ;
 	}
@@ -16,6 +16,6 @@ void Server::PASS(void){
 		sendReply(fd, ERR_PASSWDMISMATCH);
 		return ;
 	}
-	this->_client[this->_currentClient].setisPassed(1);
-	this->_client[this->_currentClient].setreg();
+	this->_client[fd].setisPassed(1);
+	// this->_client[fd].setreg();
 }

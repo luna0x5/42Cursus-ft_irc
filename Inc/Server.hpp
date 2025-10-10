@@ -81,8 +81,8 @@ class Server
             int         IsChannelExist(std::string ChanName);
             int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
 
-        //     int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
-        //     void        JOIN(void);
+            int JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            void        JOIN(void);
 
             void        PASS(void);
 

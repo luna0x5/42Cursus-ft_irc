@@ -25,8 +25,6 @@ class Channel {
         bool                                    _l;
         
         
-        const std::map<std::string, Client >&    GetMembers(void) const;
-        const std::map<std::string, Client >&    GetOps(void) const;
         
         
         int                                     getCapacityLimit( void ) const;
@@ -35,7 +33,6 @@ class Channel {
         bool                                    is_restrectedTopic( void ) const;
         bool                                    is_userLimited( void ) const;
         bool                                    is_inviteOnly( void ) const;
-        bool                                    is_keyed( void ) const;
         
         
         void                                    setKey( const std::string &password ) ;
@@ -57,6 +54,9 @@ class Channel {
         Channel( const std::string name );
         ~Channel();
         
+        bool                                    is_keyed( void ) const;
+        const std::map<std::string, Client >&    GetMembers(void) const;
+        const std::map<std::string, Client >&    GetOps(void) const;
         bool                                     is_Op( const std::string &name ) const;
         bool                                     is_Member( const std::string &name ) const;
         

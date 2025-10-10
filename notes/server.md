@@ -38,9 +38,4 @@
 
 
 
-========ft_split========
-std::string jj
-stringstream buffer(line)
-std::getline(buffer, jj, ',');
-push jj to the vector of channels || keys depends on ...
-
+-->chan.incrementCount();

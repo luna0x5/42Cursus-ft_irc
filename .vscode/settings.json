@@ -133,6 +133,7 @@
     "complex": "cpp",
     "ios": "cpp",
     "locale": "cpp",
-    "mutex": "cpp"
+    "mutex": "cpp",
+    "ranges": "cpp"
   }
 }

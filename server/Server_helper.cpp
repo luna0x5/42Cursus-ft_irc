@@ -62,7 +62,7 @@ void Server::commands_handler(){
             USER();
             break;
         case 3:
-            // JOIN();
+            JOIN();
             break;
         case 4:
             std::cout<<"PART"<<std::endl;

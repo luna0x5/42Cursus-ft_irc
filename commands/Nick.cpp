@@ -42,7 +42,7 @@ void Server::NICK(void){
 	int fd = this->_currentClient;
 	// std::string nick = this->_client[this->_currentClient].getnick();
 
-	if (!this->_client[this->_currentClient].getisPassed()){
+	if (!this->_client[fd].getisPassed()){
 		sendReply(fd, ERR_PASSWDMISMATCH);
 		// OneClean();
 		return;
@@ -57,11 +57,14 @@ void Server::NICK(void){
 		// OneClean();
 		return;
 	}
-	this->_client[this->_currentClient].setnick(this->_line[1]);
-	this->_client[this->_currentClient].setreg();
-	if (this->_client[this->_currentClient].getreg() == 3){
+	this->_client[fd].setnick(this->_line[1]);
+	this->_client[fd].set_is_nick(1);
+	if (this->_client[fd].get_is_user()){
+		this->_client[fd].setregistered(1);
 		sendReply(fd, RPL_WELCOME(this->_line[1]));
 		return;
 	}
 	// std::cout<<"nickname : "<< this->_client[this->_currentClient].getnick()<<std::endl;
 }
+
+//nick + no params

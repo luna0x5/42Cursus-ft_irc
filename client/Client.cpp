@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client():registered(0),isPassed(0), reg_done(0){
+Client::Client():isPassed(0),registered(0){
 
 }
 
@@ -44,6 +44,8 @@ bool Client::getregistered(void){
     return this->registered;
 }
 
+////////////////////////////
+
 bool Client::getisPassed(void){
     return this->isPassed;
 }
@@ -52,17 +54,32 @@ void Client::setisPassed(bool p){
     this->isPassed = p;
 }
 
+void Client::set_is_user(bool u){
+    this->isUser = u;
+}
+bool Client::get_is_user(void){
+    return this->isUser;
+}
+bool Client::get_is_nick(void){
+    return this->isNick;
+}
+void Client::set_is_nick(bool n){
+    this->isNick = n;
+}
+
+/////////////////////////////////
+
 void Client::setregistered(bool r){
     this->registered = r;
 }
 
-void Client::setreg(void){
-    this->reg_done++;
-}
+// void Client::setreg(void){
+//     this->reg_done++;
+// }
 
-int Client::getreg(void){
-    return this->reg_done;
-}
+// int Client::getreg(void){
+//     return this->reg_done;
+// }
 
 std::string Client::getnick(void){
     return this->nickname;
