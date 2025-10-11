@@ -1,51 +1,40 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/05/26 02:35:14 by hmoukit           #+#    #+#              #
-#    Updated: 2025/09/14 17:23:47 by hmoukit          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME	= ircserv
 
-HEADER	=	./Inc/Server.hpp        \
-			./Inc/Client.hpp  \
-			./Inc/Channel.hpp \
-			./Inc/numericalReplies.hpp \
+HEADER	=	server/Server.hpp\
+			client/Client.hpp \
+			channel/Channel.hpp \
+			./Inc/numericalReplies.hpp\
 
 files	=	main.cpp \
 			server/Server.cpp \
-			server/Server_helper.cpp \
 			client/Client.cpp \
-			channel/Channel.cpp \
-			commands/privmsg.cpp \
+			server/Server_helper.cpp\
+			commands/Join.cpp \
+			channel/Channel.cpp\
  			commands/Pass.cpp \
 			commands/Nick.cpp \
 			commands/User.cpp \
-			# Inc/numericalReplies.cpp \
-			# commands/Join.cpp \
-			# commands/mode/mode.cpp\
-			# commands/mode/utils.cpp
+			commands/mode/mode.cpp\
+			commands/mode/utils.cpp\
+			commands/Topic.cpp \
+			commands/Privmsg.cpp \
+			commands/Kick.cpp \
+			commands/Invite.cpp
+
 
 obj		:= $(files:.cpp=.o)
 
-# Cpp		= c++
-Cpp = g++
+Cpp		= g++
 
-FLAGS	=  -Wall -Wextra -Werror -std=c++98  -I./Inc
+FLAGS	= -Wall -Wextra -Werror -std=c++98 -I./Inc
 
 all : $(NAME)
 
-
 $(NAME) : $(obj)
-	@$(Cpp) $(FLAGS) $(obj) $(LIBRARY) -o $(NAME)
+		$(Cpp) $(FLAGS) -o $@ $^
 
-%.o: %.cpp $(HEADER)
-	$(Cpp) $(FLAGS) -c $< -o $@
+%.o:%.cpp $(HEADER)
+		$(Cpp) $(FLAGS) -c $< -o $@
 
 clean:
 		rm -rf $(obj)
@@ -53,13 +42,13 @@ clean:
 fclean: clean
 		rm -rf $(NAME)
 
-re: fclean all
+re: fclean all4
 
-commit: fclean
+commit:
 	git add .
 	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"  
 
-push: fclean
+push:
 	git add .
 	git status
 	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"

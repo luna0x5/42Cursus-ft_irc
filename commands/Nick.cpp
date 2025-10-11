@@ -1,4 +1,6 @@
-#include "Server.hpp"
+#include "../server/Server.hpp"
+
+// #include "Server.hpp"
 
 bool Server::AlreadyInUse(void){
 	std::map<int, Client>::iterator it = this->_client.begin();
@@ -18,7 +20,8 @@ bool Server::firstChar(void){
 
 bool Server::otherChar(void){
 	std::string except = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm[]\\`_^{|}123456789-";
-	for (size_t i=1; i < this->_line[i].length(); i++){
+	for (size_t i=1; i < this->_line[1].size(); i++){
+		std::cout<<"["<< this->_line[1]<< "] : " << "("<< this->_line[1][i]<< ")  : " <<i<< "  :  "<< this->_line[i].size() <<std::endl;
 		if (except.find(this->_line[1][i]) == std::string::npos){
 			return false;
 		}
@@ -31,32 +34,39 @@ bool Server::Nickparse(void){
 		return false;
 	}
 	if (!firstChar() || !otherChar()){
+		std::cout<<"here"<<std::endl;
 		return false;
 	}
 	return true;
 }
 
 void Server::NICK(void){
-	if (!this->_client[this->_currentClient].getisPassed()){
-		std::cout << "Password error-------" << std::endl;
-		OneClean();
+	int fd = this->_currentClient;
+	// std::string nick = this->_client[this->_currentClient].getnick();
+
+	if (!this->_client[fd].getisPassed()){
+		sendReply(fd, ERR_PASSWDMISMATCH);
+		// OneClean();
 		return;
 	}
 	if (!AlreadyInUse()){
-		std::cout << "nickname error-------" << std::endl;
-		OneClean();
+		sendReply(fd, ERR_NICKNAMEINUSE);
+		// OneClean();
 		return;
 	}
 	if (!Nickparse()){
-		std::cout << "no such nickname-----" << std::endl;
-		OneClean();
+		sendReply(fd, ERR_ERRONEUSNICKNAME);
+		// OneClean();
 		return;
 	}
-	this->_client[this->_currentClient].setnick(this->_line[1]);
-	this->_client[this->_currentClient].setreg();
-	if (this->_client[this->_currentClient].getreg() == 3){
-		sendReply(this->_client[_currentClient].getFd(), "welcome reply------");
+	this->_client[fd].setnick(this->_line[1]);
+	this->_client[fd].set_is_nick(1);
+	if (this->_client[fd].get_is_user()){
+		this->_client[fd].setregistered(1);
+		sendReply(fd, RPL_WELCOME(this->_line[1]));
 		return;
 	}
 	// std::cout<<"nickname : "<< this->_client[this->_currentClient].getnick()<<std::endl;
 }
+
+//nick + no params

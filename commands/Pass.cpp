@@ -1,18 +1,23 @@
-#include "Server.hpp"
+#include "../server/Server.hpp"
+
+// #include "Server.hpp"
 
 void Server::PASS(void){
-	if (this->_client[this->_currentClient].getregistered() || this->_client[this->_currentClient].getisPassed()){
-		std::cout << "this client is already" << std::endl;
+	int fd = this->_currentClient;
+	std::string nick = this->_client[fd].getnick();
+
+	if (this->_client[fd].getisPassed()){
+		sendReply(fd, ERR_ALREADYREGISTERED(nick));
 		return ;
 	}
 	if (this->_line.size() < 2){
-		std::cout << "you need more params" << std::endl;
+		sendReply(fd, ERR_NEEDMOREPARAMS(nick, "PASS"));
 		return ;
 	}
 	if ( _line[1] != this->_password){
-		std::cout << "password is wrong" <<std::endl;
+		sendReply(fd, ERR_PASSWDMISMATCH);
 		return ;
 	}
-	this->_client[this->_currentClient].setisPassed(1);
-	this->_client[this->_currentClient].setreg();
+	this->_client[fd].setisPassed(1);
+	// this->_client[fd].setreg();
 }

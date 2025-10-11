@@ -1,0 +1,226 @@
+// #ifndef SERVER_HPP
+// #define SERVER_HPP
+
+// #include <string>
+// #include <vector>
+// #include <poll.h>
+// #include <sys/types.h>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <iostream>
+// #include <unistd.h>
+// #include <cstdlib>
+// #include <cstring>
+// #include <map>
+// #include "../client/Client.hpp"
+// #include "numericalReplies.hpp"
+// #include <fcntl.h>
+// #include <sstream>
+// #include <stdexcept>
+// #include "../channel/Channel.hpp"
+// #include <algorithm>
+
+// enum Commands {
+//     PASS_cmd,
+//     NICK_cmd,
+//     USER_cmd,
+//     JOIN_cmd,
+//     PART_cmd,
+//     MODE_cmd,
+//     TOPIC_cmd,
+//     KICK_cmd,
+//     INVITE_cmd,
+// 	PRIVMSG_cmd,
+//     UNKNOWN_cmd
+// };
+
+
+// class Server
+// {
+//     private:
+
+//             uint                            _port;
+//             std::string                     _password;
+//             int                             _Socket_fd;
+//             std::map<int, Client>           _client;
+//             int                             _currentClient;
+//             std::vector<Channel>            _channel;
+//             std::vector<pollfd>             _poll_fds;
+//             std::vector<std::string>        _line;
+//             std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
+//             std::string                     _serverName;
+
+//     public:
+
+//             Server(uint port , std::string password);
+//             ~Server();
+//             void     start(void);
+//             static void        Handler(int sig);
+    
+//     private :
+
+//             int         server_socket(void);
+//             void        running_server(int Socket_fd);
+
+//             void        handle_new_connections(int Socket_fd);
+//             void        handle_client_data(int fd);
+
+//             void        parse_cmd(std::string cmd);
+//             void        commands_handler(void);
+//             void        initCmds(void);
+//             int         GetCmds(void);
+    
+//             int         IsChannelExist(std::string ChanName);
+//             int         split(std::vector<std::string> *channels, std::string& chan, char delimiter);
+//             void        checkErr(const int res, const int err, const char *msg);
+
+//             int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+//             void        JOIN(void);
+
+//             void        PASS(void);
+
+//             void        NICK(void);
+//             bool        Nickparse(void);
+//             bool        firstChar(void);
+//             bool        AlreadyInUse(void);
+//             bool        otherChar(void);
+
+//             void        USER(void);
+
+// 			void		PRIVMSG(void);
+// 			void		INVITE(void);
+// 			void		TOPIC(void);
+// 			void		KICK(void);
+
+
+//             void        cleaner(void);
+//             void        OneClean(void);
+//             bool        findit(pollfd p);
+
+//             void        sendErr(const reply code, const std::string cmdName);
+
+// };
+
+// #endif
+
+
+#ifndef SERVER_HPP
+#define SERVER_HPP
+
+#include <string>
+#include <vector>
+#include <poll.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <iostream>
+#include <unistd.h>
+#include <cstdlib>
+#include <cstring>
+#include <map>
+#include "../client/Client.hpp"
+#include <fcntl.h>
+#include <sstream>
+#include <stdexcept>
+#include <algorithm>
+
+#include "numericalReplies.hpp"
+// #include "Channel.hpp"
+class Channel;
+
+enum Commands {
+    PASS_cmd,
+    NICK_cmd,
+    USER_cmd,
+    JOIN_cmd,
+    PART_cmd,
+    MODE_cmd,
+    TOPIC_cmd,
+    KICK_cmd,
+    INVITE_cmd,
+	PRIVMSG_cmd,
+    UNKNOWN_cmd
+};
+
+
+class Server
+{
+    private:
+
+            uint                            _port;
+            std::string                     _password;
+            int                             _Socket_fd;
+            std::map<int, Client>           _client;
+            int                             _currentClient;
+            std::map<std::string, Channel>  _channel;// TODO:
+            std::vector<pollfd>             _poll_fds;
+            std::vector<std::string>        _line;
+            std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
+
+            std::string                     _serverName;
+
+            typedef std::map<std::string, Channel>::iterator ch_it;
+            typedef std::map<int, Client>::iterator          cl_it;
+
+    public:
+
+        
+            Server(uint port , std::string password);
+            ~Server();
+            void     start(void);
+            
+            static void        sendReply(int fd,  const std::string& reply);
+            static void        Handler(int sig);
+
+    private :
+
+            int         server_socket(void);
+            void        running_server(int Socket_fd);
+
+            void        handle_new_connections(int Socket_fd);
+            void        handle_client_data(int fd);
+
+            void        parse_cmd(std::string cmd);
+            void        commands_handler(void);
+            void        initCmds(void);
+            int         GetCmds(void);
+    
+            int         IsChannelExist(std::string ChanName);
+            int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
+
+            int JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            void        JOIN(void);
+
+            void        PASS(void);
+
+            void        NICK(void);
+            bool        Nickparse(void);
+            bool        firstChar(void);
+            bool        AlreadyInUse(void);
+            bool        otherChar(void);
+
+            void        USER(void);
+
+            void                checkErr(const int res, const int err, const char *msg);
+            Channel*            channelExist( const std::string &name );
+            Client*             userExist( const std::string &nick);
+            const std::string   parseMode( void );
+            void                MODE( void );
+
+            void        cleaner(void);
+            void        OneClean(void);
+            bool        findit(pollfd p);
+
+            void        Sender(std::string num);
+
+			void		PRIVMSG(void);
+			void		INVITE(void);
+			void		KICK(void);
+			void		TOPIC(void);
+        //     void        sendReply(const reply code, const std::string cmdName);
+
+};
+
+#include "../channel/Channel.hpp"
+
+#endif
