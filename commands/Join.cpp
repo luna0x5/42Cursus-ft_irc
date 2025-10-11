@@ -40,7 +40,9 @@ int Server::ft_split(std::vector<std::string> *channels, std::string& chans, cha
     chans.clear();
     return 1;
 }
-
+//#
+// already in
+// check for the password again
 void Server::JOIN(void){
     if (!this->_client[this->_currentClient].getregistered()){
         // sendErr(ERR_NOTREGISTERED, "");//451
@@ -53,7 +55,6 @@ void Server::JOIN(void){
         return ;
     }
     for (size_t i=0; i<chans.size(); i++){
-        std::cout<<"start join"<<std::endl;
         if (this->_channel.find(chans[i]) == this->_channel.end()){
             this->_channel[chans[i]] = Channel(chans[i]);
             Channel &Chan = this->_channel[chans[i]];
@@ -64,32 +65,35 @@ void Server::JOIN(void){
             std::cerr<<"RPL_JOIN"<<std::endl;
         }
         else{
-            //check if it is invite only and limit of channel
-            
             Channel &Chan = this->_channel[chans[i]];
             Client *membr = &this->_client[this->_currentClient];
+            if (Chan.getCapacityLimit() <= Chan.GetMembers().size()){ // check if the +l et or not
+                // sendErr(ERR_CHANNELISFULL, "");
+                std::cerr<<"ERR_CHANNELISFULL"<<std::endl;
+            }
+            //invite only
             if (Chan.is_keyed()){
+                std::cout<<"key"<<std::endl;
                 if ( i < keys.size() && Chan.GetPassword() == keys[i]){
                     Chan.addMember(*membr);
-                    // sendErr(RPL_JOIN, "");
-                    std::cerr<<"RPL_JOIN"<<std::endl;
-                }
-            else {
-                if (i >= keys.size()){
-                    // sendErr(ERR_NEEDMOREPARAMS, "");
-                    std::cerr<<"ERR_NEEDMOREPARAMS"<<std::endl;
                 }
                 else {
-                    // sendErr(ERR_BADCHANNELKEY, "");
-                    std::cerr<<"ERR_BADCHANNELKEY"<<std::endl;
+                    if (i >= keys.size()){
+                        // sendErr(ERR_NEEDMOREPARAMS, "");
+                        std::cerr<<"ERR_NEEDMOREPARAMS"<<std::endl;
+                    }
+                    else {
+                        // sendErr(ERR_BADCHANNELKEY, "");
+                        std::cerr<<"ERR_BADCHANNELKEY"<<std::endl;
+                    }
                 }
             }
-        }
-        else {
-            Client *membr = &this->_client[this->_currentClient];
-            this->_channel[chans[i]].addMember(*membr);
-            // sendErr(RPL_JOIN, "");
-            std::cerr<<"RPL_JOIN"<<std::endl;
+            else {
+                std::cout<<"no key"<<std::endl;
+                Client *membr = &this->_client[this->_currentClient];
+                this->_channel[chans[i]].addMember(*membr);
+                // sendErr(RPL_JOIN, "");
+                std::cerr<<"RPL_JOIN"<<std::endl;
             }
         }
     }

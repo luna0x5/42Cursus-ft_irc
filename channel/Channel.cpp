@@ -28,7 +28,7 @@ Channel::GetOps(void)const {
     return this->_Ops;
 }
 
-int
+size_t
 Channel::getCapacityLimit( void ) const 
 {
     return this->_capacityLimit;
@@ -99,7 +99,6 @@ void Channel::rmMode(const char &mode)
     }
 }
 
-
 void
 Channel::addOps( Client &newOp )
 {
@@ -122,7 +121,6 @@ Channel::addMember(Client &client)
     this->_members[client.getnick()] = client;
 }
 
-
 void
 Channel::setKey( const std::string &password )
 {
@@ -134,11 +132,11 @@ void
 Channel::setCapacityLimit( const std::string &num )
 {
     std::stringstream   extract(num);
-    int                 i;
+    size_t                 i;
 
     if (extract >> i)
     {
-        if (i >= 0)
+        if (i > 0)
         {
             this->_capacityLimit = i;
             this->triggerMode('+', 'l', this->is_userLimited(), this->_l);
@@ -193,7 +191,7 @@ void
 Channel::set_l( char flag , const std::string &num )
 {
     if (flag == '+')
-        setCapacityLimit(num);
+        setCapacityLimit(num); //
     else
         this->triggerMode('-', 'l', this->is_userLimited(), this->_l);
 }

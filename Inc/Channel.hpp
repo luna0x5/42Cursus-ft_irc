@@ -27,7 +27,6 @@ class Channel {
         
         
         
-        int                                     getCapacityLimit( void ) const;
         uint                                    getMembersCount( void ) const;
         
         bool                                    is_restrectedTopic( void ) const;
@@ -54,6 +53,7 @@ class Channel {
         Channel( const std::string name );
         ~Channel();
         
+        size_t                                     getCapacityLimit( void ) const;
         bool                                    is_keyed( void ) const;
         const std::map<std::string, Client >&    GetMembers(void) const;
         const std::map<std::string, Client >&    GetOps(void) const;
