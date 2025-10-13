@@ -28,7 +28,7 @@ bool Server::otherChar(void){
 }
 
 bool Server::Nickparse(void){
-	if (this->_line[1].size() < 1 || this->_line[1].size()>=9){
+	if (this->_line[1].size() < 1 || this->_line[1].size()>9){
 		return false;
 	}
 	if (!firstChar() || !otherChar()){
@@ -41,6 +41,12 @@ bool Server::Nickparse(void){
 void Server::NICK(void){
 	int fd = this->_currentClient;
 	// std::string nick = this->_client[this->_currentClient].getnick();
+
+	if (this->_line.size() < 2){
+        // sendReply(fd, ERR_NONICKNAMEGIVEN);
+		std::cout<<"NICK : no params"<<std::endl;
+        return;
+    }
 
 	if (!this->_client[fd].getisPassed()){
 		sendReply(fd, ERR_PASSWDMISMATCH);
@@ -59,7 +65,7 @@ void Server::NICK(void){
 	}
 	this->_client[fd].setnick(this->_line[1]);
 	this->_client[fd].set_is_nick(1);
-	if (this->_client[fd].get_is_user()){
+	if (this->_client[fd].get_is_user() == 1){
 		this->_client[fd].setregistered(1);
 		sendReply(fd, RPL_WELCOME(this->_line[1]));
 		return;
