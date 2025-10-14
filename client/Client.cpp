@@ -94,7 +94,7 @@ void Client::setuser(std::string user){
     this->username = user;
 }
 void Client::setrealname(std::string real){
-    this->realname = real;
+    this->realname = real.erase(0,1);
 }
 std::string Client::getrealname(void){
     return this->realname;

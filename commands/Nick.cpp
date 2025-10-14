@@ -64,12 +64,14 @@ void Server::NICK(void){
 		return;
 	}
 	this->_client[fd].setnick(this->_line[1]);
+	std::cout<<"NICK : new nickname set to "<< this->_line[1]<<std::endl;
 	this->_client[fd].set_is_nick(1);
-	if (this->_client[fd].get_is_user() == 1){
+	if (this->_client[fd].get_is_user() == 1 && this->_client[fd].getregistered() == 0){
 		this->_client[fd].setregistered(1);
 		sendReply(fd, RPL_WELCOME(this->_line[1]));
 		return;
 	}
+
 	// std::cout<<"nickname : "<< this->_client[this->_currentClient].getnick()<<std::endl;
 }
 

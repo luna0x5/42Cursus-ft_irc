@@ -99,7 +99,7 @@ void Server::parse_cmd(std::string cmd){
     size_t      pos = cmd.find(" :");
 
     if (pos != std::string::npos){
-        message = cmd.substr(pos + 2);
+        message = cmd.substr(pos + 1);
         cmd.erase(pos);
     }
     std::stringstream bf(cmd);
