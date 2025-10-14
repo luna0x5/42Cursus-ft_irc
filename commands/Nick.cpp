@@ -32,7 +32,6 @@ bool Server::Nickparse(void){
 		return false;
 	}
 	if (!firstChar() || !otherChar()){
-		std::cout<<"here"<<std::endl;
 		return false;
 	}
 	return true;
@@ -40,7 +39,6 @@ bool Server::Nickparse(void){
 
 void Server::NICK(void){
 	int fd = this->_currentClient;
-	// std::string nick = this->_client[this->_currentClient].getnick();
 
 	if (this->_line.size() < 2){
         // sendReply(fd, ERR_NONICKNAMEGIVEN);
@@ -64,7 +62,6 @@ void Server::NICK(void){
 		return;
 	}
 	this->_client[fd].setnick(this->_line[1]);
-	std::cout<<"NICK : new nickname set to "<< this->_line[1]<<std::endl;
 	this->_client[fd].set_is_nick(1);
 	if (this->_client[fd].get_is_user() == 1 && this->_client[fd].getregistered() == 0){
 		this->_client[fd].setregistered(1);
@@ -72,7 +69,6 @@ void Server::NICK(void){
 		return;
 	}
 
-	// std::cout<<"nickname : "<< this->_client[this->_currentClient].getnick()<<std::endl;
 }
 
 //nick + no params

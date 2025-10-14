@@ -1,5 +1,15 @@
 #include "../Inc/Server.hpp"
 
+bool Name_check(std::string line){
+    if (line[0] != '#' && line[0] != '&'){
+        return false;
+    }
+    return true;
+}
+
+// bool Already_in_channel(Channel &chan, Client &client){
+// }
+
 int Server::JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys){
     
     if (this->_line.size()<=1){
@@ -55,6 +65,11 @@ void Server::JOIN(void){
         return ;
     }
     for (size_t i=0; i<chans.size(); i++){
+        if (Name_check(chans[i]) == false){
+            // sendErr(ERR_NOSUCHCHANNEL, "");
+            std::cerr<<"ERR_NOSUCHCHANNEL"<<std::endl;
+            continue;
+        }
         if (this->_channel.find(chans[i]) == this->_channel.end()){
             this->_channel[chans[i]] = Channel(chans[i]);
             Channel &Chan = this->_channel[chans[i]];

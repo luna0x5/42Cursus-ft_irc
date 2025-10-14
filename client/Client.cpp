@@ -100,7 +100,6 @@ std::string Client::getrealname(void){
     return this->realname;
 }
 
-
 void
 Client::setFd(int fd)
 {
