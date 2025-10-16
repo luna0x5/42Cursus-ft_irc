@@ -39,30 +39,30 @@ bool Server::Nickparse(void){
 void Server::NICK(void){
 	int fd = this->_currentClient;
 
-	if (this->_line.size() < 2){
-        // sendReply(fd, ERR_NONICKNAMEGIVEN);
-		std::cout<<"NICK : no params"<<std::endl;
-        return;
-    }
+	// if (this->_line.size() < 2){
+    //     // sendReply(fd, ERR_NONICKNAMEGIVEN);
+	// 	std::cout<<"NICK : no params"<<std::endl;
+    //     return;
+    // }
 
-	if (!this->_client[fd].getisPassed()){
-		// sendReply(fd, ERR_PASSWDMISMATCH);
-		// OneClean();
-		return;
-	}
-	std::string	nick("*");
-	if (this->_client[fd].getregistered() == false)
-		nick = this->_client[fd].getnick();
-	if (!AlreadyInUse()){
-		sendReply(fd, ERR_NICKNAMEINUSE(nick, this->_line[1]));
-		// OneClean();
-		return;
-	}
-	if (!Nickparse()){
-		sendReply(fd, ERR_ERRONEUSNICKNAME(nick, this->_line[1]));
-		// OneClean();
-		return;
-	}
+	// if (!this->_client[fd].getisPassed()){
+	// 	// sendReply(fd, ERR_PASSWDMISMATCH);
+	// 	// OneClean();
+	// 	return;
+	// }
+	// std::string	nick("*");
+	// if (this->_client[fd].getregistered() == false)
+	// 	nick = this->_client[fd].getnick();
+	// if (!AlreadyInUse()){
+	// 	sendReply(fd, ERR_NICKNAMEINUSE(nick, this->_line[1]));
+	// 	// OneClean();
+	// 	return;
+	// }
+	// if (!Nickparse()){
+	// 	sendReply(fd, ERR_ERRONEUSNICKNAME(nick, this->_line[1]));
+	// 	// OneClean();
+	// 	return;
+	// }
 	this->_client[fd].setnick(this->_line[1]);
 	this->_client[fd].set_is_nick(1);
 	if (this->_client[fd].get_is_user() == 1 && this->_client[fd].getregistered() == 0){

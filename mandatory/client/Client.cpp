@@ -32,6 +32,8 @@ void Client::extract_cmds(void){
         Buffer.erase(0, pos + 2);
     }
 } // if the \r\n exactement in the end what find will return in buffer if it's empty
+
+
  std::string& Client::GetUsername(void){
     return username;
 }

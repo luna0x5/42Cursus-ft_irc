@@ -3,12 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/16 02:00:18 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/16 22:41:04 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+
+
+
+// ####################### i t l o k
+/*
+todo 
+
+        MODE #LOOOOOOOOL 
+        :iridium.libera.chat 324 DSADA #LOOOOOOOOL +
+
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
 
 #include "Server.hpp"
 
@@ -41,9 +68,11 @@ Server::parseMode( void )
     std::string nick    = this->_client[fd].getnick();
     size_t      size    = this->_line.size();
 
+
+  
     if ( size < 2)
         return ERR_NEEDMOREPARAMS(nick, "MODE");
-    
+
     Channel     *channel = channelExist(this->_line[1]);
     if (!channel)
         return ERR_NOSUCHCHANNEL(nick, this->_line[1]);
@@ -75,7 +104,7 @@ Server::parseMode( void )
             flag = this->_line[2][i];
     }
 
-    if (!channel->is_Op(nick))
+    if (channel->is_Op(nick) == false)
         return ERR_CHANOPRIVSNEEDED(nick, chName);
 
     return "";
@@ -86,13 +115,17 @@ void
 Server::MODE( void )
 {
     int         fd = this->_currentClient;
+ 
     if (this->_client[fd].getregistered() == false)
         return sendReply(fd, ERR_NOTREGISTERED(std::string("*")));
-    
+
+
+
     std::string pareseReply = this->parseMode();
     if (!pareseReply.empty())
         return sendReply(this->_currentClient, pareseReply);
 
+        
     std::string nick = this->_client[fd].getnick();
     size_t      size = this->_line.size();
     std::string modestring(this->_line[2]);
@@ -100,8 +133,10 @@ Server::MODE( void )
     char        flag = '+';
     int         count = 2;
     bool        f = false;
+
+    channel->changedModes.clear();
+    channel->args.clear();
     
-    std::cerr << modestring << "-----\n";
     for (size_t i = 0; i < modestring.length(); i++)
     {
         while (modestring[i] && (modestring[i] == '+' || modestring[i] == '-'))
@@ -110,8 +145,15 @@ Server::MODE( void )
             f = true;
             i++;
         }
-        if (f || i == 0)
+        if (i == modestring.length())
+            return ;
+        if ((f || i == 0) )
+        {
+            if (channel->changedModes[channel->changedModes.length() - 1] == '-'
+                || channel->changedModes[channel->changedModes.length() - 1] == '+')
+                    channel->changedModes[channel->changedModes.length() - 1] = 0;
             channel->changedModes+= flag;
+        }
         switch (modestring[i])
         {
             case 'i': channel->set_i(flag); break;
@@ -127,7 +169,7 @@ Server::MODE( void )
             {
                 count++;
                 Client  *op = this->userExist(this->_line[count]);
-                if (op && !channel->set_o(flag, *op))
+                if (op && channel->set_o(flag, *op) == false)
                         sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], channel->GetName()));
                  else if (!op)
                         sendReply(fd, ERR_NOSUCHNICK(nick, this->_line[count]));
@@ -139,11 +181,16 @@ Server::MODE( void )
                 channel->set_l(flag, this->_line[count]);
                 break;
             }
-            std::cerr << channel->changedModes << "------";
         
         }
+        f = false;
         
     }
+    
+    int strsize = channel->changedModes.length();
+
+    for (int i = strsize - 1; i >= 0 && (channel->changedModes[i] == '+' || channel->changedModes[i] == '-') ; i--)
+        channel->changedModes.erase(i);
 
     channel->broadcastReply(RPL_MODE(channel->GetName(), channel->changedModes, channel->args));
 

@@ -4,14 +4,15 @@
 #include<string>
 #include<map>
 #include <vector>
+#include <iostream>
 
 class Client {
     private:
         std::string ip;
         std::string Buffer;
         std::vector<std::string> cmds; //to store all cmds ends with /r/n
-        
-        
+
+
         bool isPassed; // defaul 0
         bool isNick;
         bool isUser;

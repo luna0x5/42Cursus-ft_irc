@@ -56,8 +56,6 @@ class Server
             typedef std::map<int, Client>::iterator          cl_it;
 
     public:
-
-        
             Server(uint port , std::string password);
             ~Server();
             void     start(void);

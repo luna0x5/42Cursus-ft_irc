@@ -71,7 +71,7 @@ Server::running_server(int Socket_fd)
                     try{
                         handle_new_connections(_Socket_fd);
                     }
-                    catch(std::exception& e){
+                    catch(std::exception& e){ // ??????
                         std::cerr<<e.what()<<std::endl;
                     }
                 }
@@ -79,7 +79,7 @@ Server::running_server(int Socket_fd)
                 {
                     char buffer[1048];
                     memset(buffer, 0, sizeof(buffer));
-                    int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer), 0);
+                    int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer) - 1, 0);
                     if (bytes <= 0)
                     {
                         //     if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -97,6 +97,7 @@ Server::running_server(int Socket_fd)
                     {
                         buffer[bytes] = '\0';
                         _client[this->_poll_fds[i].fd].AddBuffer(buffer);
+                        
                         _client[this->_poll_fds[i].fd].extract_cmds();
                         handle_client_data(this->_poll_fds[i].fd);
                     }

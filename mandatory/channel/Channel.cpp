@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel():Name("default") , _capacityLimit(0), _membersCount(0) ///
+Channel::Channel():Name("default") , _capacityLimit(0), _membersCount(0), _modes("+") ///
 , _i(false), _t(false), _k(false), _l(false)
 {
     this->_creationTime = std::time(NULL);
@@ -8,7 +8,7 @@ Channel::Channel():Name("default") , _capacityLimit(0), _membersCount(0) ///
     // this->_Ops.clear();
 }
 
-Channel::Channel( const std::string name ): Name(name), _capacityLimit(0), _membersCount(0)
+Channel::Channel( const std::string name ): Name(name), _capacityLimit(0), _membersCount(0), _modes("+")
 , _i(false), _t(false), _k(false), _l(false)
 {
     this->_creationTime = std::time(NULL);
@@ -59,7 +59,7 @@ bool
 Channel::is_Member( const std::string &name ) const
 {
     std::map<std::string, Client>::const_iterator it = this->_members.find(name);
-
+    std::cerr << name << "nameeee\n";
     return (it != this->_members.end()) ? true : false;
 }
 
@@ -140,7 +140,8 @@ Channel::setCapacityLimit( const std::string &num )
         {
             this->_capacityLimit = i;
             this->triggerMode('+', 'l', this->is_userLimited(), this->_l);
-            this->args += " " + i;
+            this->args += " " + to_string(i);
+            std::cerr << this->args << "-----"<<i << "\n";
         }
 
     }
@@ -162,6 +163,8 @@ Channel::set_t( char flag)
 void
 Channel::set_k( char flag, const std::string &pass)
 {
+    if (this->is_keyed() && flag == '+')
+        this->changedModes += "k";
     triggerMode(flag, 'k', this->is_keyed(), this->_k);
     if (flag == '+')
         this->setKey(pass);
@@ -173,9 +176,10 @@ bool
 Channel::set_o( char flag, Client &op )
 {
     std::string name = op.getnick();
-    constmap_it    oper = this->GetOps().find(name);
+    constmap_it    oper = this->GetMembers().find(name);
 
-    if (oper == this->GetOps().end())
+    std::cerr << "name = " << name;
+    if (oper == this->GetMembers().end())
         return false;
     if (flag == '+')
         addOps(op);
@@ -207,23 +211,18 @@ Channel::triggerMode( const char flag , const char mode, const bool isMode, bool
 {
     if (flag == '+' && !isMode)
     {
+        // if (mode != 't')
         this->changedModes+= mode;
         this->addModes(mode);
         toTrigger = true;
-        if (mode != 'i' && mode != 't')
-            this->changedModes += mode;
-        this->brdcast = true;
     }
     else if (flag == '-' && isMode)
     {
         this->changedModes+= mode;
         this->rmMode(mode);
         toTrigger = false;
-        if (mode != 'i' && mode != 't')
-            this->changedModes += mode;
-        this->brdcast = true;
+        // if (mode != 'i' && mode != 't')
     }
-    this->brdcast = false;
 }
 
 void
@@ -255,8 +254,9 @@ Channel::getTime( void )const
 void
 Channel::broadcastReply(const std::string &reply)
 {
-    if (this->brdcast == false)
+    if (this->changedModes.empty())
         return ;
+
     std::map<std::string, Client>   members = this->GetMembers();
     constmap_it                     clients = members.begin();
 

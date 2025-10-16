@@ -69,7 +69,9 @@ void Server::commands_handler(){
             std::cout<<"PART"<<std::endl;
             break;
         case 5:
+            LOG("MODE")
             MODE();
+            LOG("###################")
             break;
         case 6:
             std::cout<<"TOPIC"<<std::endl;
