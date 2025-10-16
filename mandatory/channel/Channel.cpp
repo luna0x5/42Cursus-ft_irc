@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel():Name("default") , _capacityLimit(-1), _membersCount(0)
+Channel::Channel():Name("default") , _capacityLimit(0), _membersCount(0) ///
 , _i(false), _t(false), _k(false), _l(false)
 {
     this->_creationTime = std::time(NULL);
@@ -8,7 +8,7 @@ Channel::Channel():Name("default") , _capacityLimit(-1), _membersCount(0)
     // this->_Ops.clear();
 }
 
-Channel::Channel( const std::string name ): Name(name), _capacityLimit(-1), _membersCount(0)
+Channel::Channel( const std::string name ): Name(name), _capacityLimit(0), _membersCount(0)
 , _i(false), _t(false), _k(false), _l(false)
 {
     this->_creationTime = std::time(NULL);
@@ -210,16 +210,20 @@ Channel::triggerMode( const char flag , const char mode, const bool isMode, bool
         this->changedModes+= mode;
         this->addModes(mode);
         toTrigger = true;
+        if (mode != 'i' && mode != 't')
+            this->changedModes += mode;
+        this->brdcast = true;
     }
     else if (flag == '-' && isMode)
     {
         this->changedModes+= mode;
         this->rmMode(mode);
         toTrigger = false;
+        if (mode != 'i' && mode != 't')
+            this->changedModes += mode;
+        this->brdcast = true;
     }
-    else if (mode != 'i' && mode != 't')
-        this->changedModes += mode;
-
+    this->brdcast = false;
 }
 
 void
@@ -251,6 +255,8 @@ Channel::getTime( void )const
 void
 Channel::broadcastReply(const std::string &reply)
 {
+    if (this->brdcast == false)
+        return ;
     std::map<std::string, Client>   members = this->GetMembers();
     constmap_it                     clients = members.begin();
 

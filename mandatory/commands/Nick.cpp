@@ -51,7 +51,7 @@ void Server::NICK(void){
 		return;
 	}
 	std::string	nick("*");
-	if (this->_client[fd].getreg() == 3)
+	if (this->_client[fd].getregistered() == false)
 		nick = this->_client[fd].getnick();
 	if (!AlreadyInUse()){
 		sendReply(fd, ERR_NICKNAMEINUSE(nick, this->_line[1]));

@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/26 14:39:28 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/16 02:00:18 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,19 +60,19 @@ Server::parseMode( void )
     std::string modes("lko");
     char        flag = '+';
 
-    for (size_t i = 0; i < this->_line[3].length(); i++)
+    for (size_t i = 0; i < this->_line[2].length(); i++)
     {
-        if (modes.find(this->_line[3][i]))
+        if (modes.find(this->_line[2][i]) != std::string::npos)
         {
             count++;
-            if (((this->_line[3][i] == 'l' && flag == '+')|| this->_line[3][i] == 'o') 
+            if (((this->_line[2][i] == 'l' && flag == '+')|| this->_line[2][i] == 'o') 
                 && (int)size < count + 1)
                 return  ERR_NEEDMOREPARAMS(nick, "MODE");
         }
-        else if (validModeString(this->_line[3][i]) == -1)
-            return ERR_UNKNOWNMODE(nick, this->_line[3][i]);
-        else if (this->_line[3][i] == '+' || this->_line[3][i] == '-')
-            flag = this->_line[3][i];
+        else if (validModeString(this->_line[2][i]) == -1)
+            return ERR_UNKNOWNMODE(nick, this->_line[2][i]);
+        else if (this->_line[2][i] == '+' || this->_line[2][i] == '-')
+            flag = this->_line[2][i];
     }
 
     if (!channel->is_Op(nick))
@@ -86,7 +86,7 @@ void
 Server::MODE( void )
 {
     int         fd = this->_currentClient;
-    if (this->_client[fd].getreg() != 3)
+    if (this->_client[fd].getregistered() == false)
         return sendReply(fd, ERR_NOTREGISTERED(std::string("*")));
     
     std::string pareseReply = this->parseMode();
@@ -95,19 +95,20 @@ Server::MODE( void )
 
     std::string nick = this->_client[fd].getnick();
     size_t      size = this->_line.size();
-    std::string modestring(this->_line[3]);
+    std::string modestring(this->_line[2]);
     Channel     *channel = channelExist(this->_line[1]);
     char        flag = '+';
     int         count = 2;
     bool        f = false;
     
+    std::cerr << modestring << "-----\n";
     for (size_t i = 0; i < modestring.length(); i++)
     {
         while (modestring[i] && (modestring[i] == '+' || modestring[i] == '-'))
         {
             flag = modestring[i];
-            i++;
             f = true;
+            i++;
         }
         if (f || i == 0)
             channel->changedModes+= flag;
@@ -138,6 +139,7 @@ Server::MODE( void )
                 channel->set_l(flag, this->_line[count]);
                 break;
             }
+            std::cerr << channel->changedModes << "------";
         
         }
         

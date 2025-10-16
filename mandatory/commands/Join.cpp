@@ -96,6 +96,8 @@ void Server::JOIN(void){
                 continue;
             }
             //check if already exist in channel
+
+            std::cout<<Chan.is_userLimited()<< "   ->   " << Chan.getCapacityLimit() <<std::endl;
             if (Chan.is_userLimited() == true && Chan.getCapacityLimit() <= (int)Chan.GetMembers().size()){
                 // sendErr(ERR_CHANNELISFULL, "");
                 std::cerr<<"ERR_CHANNELISFULL"<<std::endl;

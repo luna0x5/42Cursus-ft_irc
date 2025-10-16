@@ -13,7 +13,7 @@ class Channel {
         std::string Password;
 
         std::time_t                             _creationTime;
-        int                                     _capacityLimit;
+        size_t                                     _capacityLimit;
         uint                                    _membersCount;
         std::map<std::string, Client>           _members;
         std::string                             _modes;
@@ -74,6 +74,7 @@ class Channel {
         
         std::string                             args;
         std::string                             changedModes;
+        bool                                    brdcast;
         void                                    broadcastReply(const std::string &reply);
         // bool                                    get_l(void);
         

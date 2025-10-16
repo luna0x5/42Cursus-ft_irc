@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youssra-chagri <youssra-chagri@student.    +#+  +:+       +#+        */
+/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:36:25 by ychagri           #+#    #+#             */
-/*   Updated: 2025/09/09 12:08:21 by youssra-cha      ###   ########.fr       */
+/*   Updated: 2025/10/16 00:55:23 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char    validModeString( char mode )
 {
     std::string validModes("-+itkol");
 
-    if (validModes.find(mode) == std::string::npos)
+    if (validModes.find(mode) != std::string::npos)
         return mode;
 
     return (-1);
