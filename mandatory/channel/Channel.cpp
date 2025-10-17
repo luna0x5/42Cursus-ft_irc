@@ -195,23 +195,16 @@ void
 Channel::set_l( char flag , const std::string &num )
 {
     if (flag == '+')
-        setCapacityLimit(num); //
+        setCapacityLimit(num); 
     else
         this->triggerMode('-', 'l', this->is_userLimited(), this->_l);
 }
-
-// void
-// Channel::set_o( char flag )
-// {
-//     triggerMode(flag, 'o', this->is_restrectedTopic(), this->_);
-// }
 
 void
 Channel::triggerMode( const char flag , const char mode, const bool isMode, bool &toTrigger )
 {
     if (flag == '+' && !isMode)
     {
-        // if (mode != 't')
         this->changedModes+= mode;
         this->addModes(mode);
         toTrigger = true;
@@ -221,7 +214,6 @@ Channel::triggerMode( const char flag , const char mode, const bool isMode, bool
         this->changedModes+= mode;
         this->rmMode(mode);
         toTrigger = false;
-        // if (mode != 'i' && mode != 't')
     }
 }
 

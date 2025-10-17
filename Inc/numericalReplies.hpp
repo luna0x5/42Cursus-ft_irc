@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/16 20:38:14 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/10/17 00:13:16 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@
 #define ERR_UNKNOWNMODE(clnt, mod)        (std::string(":") + SERVERNAME + " 472 " + clnt + " " + mod + " :is an unknown mode char to me\r\n")
 #define ERR_CHANOPRIVSNEEDED(clnt, chnl)  (std::string(":") + SERVERNAME + " 482 " + clnt + " " + chnl + " :You're not a channel operator\r\n")
 #define ERR_NOTONCHANNEL(clnt, chnl)      (std::string(":") + SERVERNAME + " 442 " + clnt + " " + chnl + " :You're not on that channel\r\n")
+#define ERR_USERONCHANNEL()
 #define ERR_NOSUCHNICK(clnt, nkname)      (std::string(":") + SERVERNAME + " 401 " + clnt + " " + nkname + " :No such nick\r\n")
 #define ERR_USERNOTINCHANNEL(clnt, nkname, chnl) (std::string(":") + SERVERNAME + " 441 " + clnt + " " + nkname + " " + chnl + " :They aren't on that channel\r\n") 
 #define RPL_MODE(chnl, mod, args)         (std::string(":") + SERVERNAME + " MODE "+ chnl + " " + mod + args + "\r\n")
