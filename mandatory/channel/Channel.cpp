@@ -141,7 +141,6 @@ Channel::setCapacityLimit( const std::string &num )
             this->_capacityLimit = i;
             this->triggerMode('+', 'l', this->is_userLimited(), this->_l);
             this->args += " " + to_string(i);
-            std::cerr << this->args << "-----"<<i << "\n";
         }
 
     }
@@ -178,7 +177,6 @@ Channel::set_o( char flag, Client &op )
     std::string name = op.getnick();
     constmap_it    oper = this->GetMembers().find(name);
 
-    std::cerr << "name = " << name;
     if (oper == this->GetMembers().end())
         return false;
     if (flag == '+')
@@ -254,4 +252,5 @@ Channel::broadcastReply(const std::string &reply)
 
     for (; clients !=  members.end(); clients++)
         Server::sendReply(clients->second.getFd(), reply);
+    std::cerr<<"sent => RPL_MODE."<<std::endl;
 }

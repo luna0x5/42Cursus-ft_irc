@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client():isPassed(0),registered(0){
+Client::Client():isPassed(0),registered(0), nickname("*"){
 
 }
 

@@ -22,30 +22,37 @@ void Server::USER(void){
 	int	fd = this->_currentClient;
 	if (!this->_client[fd].getisPassed()){
 		sendReply(fd, ERR_NOTREGISTERED(this->_client[fd].getnick()));
+		std::cerr << "sent => ERR_NOTREGISTERED." << std::endl;
 		return;
 	}
 	if (this->_client[fd].getregistered()){
 		sendReply(fd, ERR_ALREADYREGISTERED(this->_client[fd].getnick()));
+		std::cerr << "sent => ERR_ALREADYREGISTERED." << std::endl;
 		return;
 	}
 	if (this->_line.size() != 5){
 		sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
+		std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl;
 		return;
 	}
 	if (this->_line[2].length() > 12){
 		sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
+		std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl;
 		return;
 	}
 	if (!checker(this->_line[2])){
 		sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
+		std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl;
 		return;
 	}
 	if (this->_line[3] != "0"){
 		sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
+		std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl;
 		return;
 	}
 	if (this->_line[1][0] != ':'){
 		sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
+		std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl;
 		return;
 	}
 	this->_client[fd].SitUsername(this->_line[2]);
@@ -55,6 +62,7 @@ void Server::USER(void){
 	if (this->_client[fd].get_is_nick() == 1){
 		this->_client[fd].setregistered(1);
 		sendReply(fd, RPL_WELCOME(this->_client[fd].getnick()));
+		std::cerr << "sent => RPL_WELCOME." << std::endl;
 		return;
 	}
 }

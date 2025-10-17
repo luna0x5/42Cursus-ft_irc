@@ -69,9 +69,7 @@ void Server::commands_handler(){
             std::cout<<"PART"<<std::endl;
             break;
         case 5:
-            LOG("MODE")
             MODE();
-            LOG("###################")
             break;
         case 6:
             std::cout<<"TOPIC"<<std::endl;
@@ -88,7 +86,7 @@ void Server::commands_handler(){
         default:{
             std::cout<<"UNKNOWN : ";
                 for(size_t i=0; i< _line.size(); i++){
-                std::cout<< this->_line[i];
+                std::cout<< this->_line[i] << " ";
                 }
                 std::cout<<std::endl;
         }

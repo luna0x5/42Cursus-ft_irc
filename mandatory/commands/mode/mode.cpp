@@ -6,27 +6,9 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/16 23:05:24 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/10/17 17:29:06 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
-
-
-
-// ####################### i t l o k
-/*
-todo 
-
-        MODE #LOOOOOOOOL 
-        :iridium.libera.chat 324 DSADA #LOOOOOOOOL +
-
-
-
-
-
-
-*/
 
 
 #include "Server.hpp"
@@ -63,16 +45,18 @@ Server::parseMode( void )
 
   
     if ( size < 2)
-        return ERR_NEEDMOREPARAMS(nick, "MODE");
+        return std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl, ERR_NEEDMOREPARAMS(nick, "MODE");
 
     Channel     *channel = channelExist(this->_line[1]);
     if (!channel)
-        return ERR_NOSUCHCHANNEL(nick, this->_line[1]);
+        return std::cerr<<"sent => ERR_NOSUCHCHANNEL."<<std::endl, ERR_NOSUCHCHANNEL(nick, this->_line[1]);
     
     std::string chName = channel->GetName();
     if (size == 2)
     {
         std::string time = to_string<time_t>(channel->getTime());
+        std::cerr<<"sent => RPL_CHANNELMODEIS."<<std::endl;
+        std::cerr<<"sent => RPL_CREATIONTIME."<<std::endl;
         return  RPL_CHANNELMODEIS(nick,chName , channel->getModes()) +
                 RPL_CREATIONTIME(nick, chName, time);
     }
@@ -88,16 +72,16 @@ Server::parseMode( void )
             count++;
             if (((this->_line[2][i] == 'l' && flag == '+')|| this->_line[2][i] == 'o') 
                 && (int)size < count + 1)
-                return  ERR_NEEDMOREPARAMS(nick, "MODE");
+                return  std::cerr<<"sent => ERR_NEEDMOREPARAMS."<<std::endl, ERR_NEEDMOREPARAMS(nick, "MODE");
         }
         else if (validModeString(this->_line[2][i]) == -1)
-            return ERR_UNKNOWNMODE(nick, this->_line[2][i]);
+            return std::cerr<<"sent => ERR_UNKNOWNMODE."<<std::endl, ERR_UNKNOWNMODE(nick, this->_line[2][i]);
         else if (this->_line[2][i] == '+' || this->_line[2][i] == '-')
             flag = this->_line[2][i];
     }
 
     if (channel->is_Op(nick) == false)
-        return ERR_CHANOPRIVSNEEDED(nick, chName);
+        return std::cerr<<"sent => ERR_CHANOPRIVSNEEDED."<<std::endl, ERR_CHANOPRIVSNEEDED(nick, chName);
 
     return "";
 }
@@ -109,7 +93,7 @@ Server::MODE( void )
     int         fd = this->_currentClient;
  
     if (this->_client[fd].getregistered() == false)
-        return sendReply(fd, ERR_NOTREGISTERED(std::string("*")));
+        return std::cerr << "sent => ERR_NOTREGISTERED." << std::endl,  sendReply(fd, ERR_NOTREGISTERED(std::string("*")));
 
 
 
@@ -162,9 +146,15 @@ Server::MODE( void )
                 count++;
                 Client  *op = this->userExist(this->_line[count]);
                 if (op && channel->set_o(flag, *op) == false)
-                        sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], channel->GetName()));
+                {
+                    sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], channel->GetName()));
+                    std::cerr<<"sent => ERR_USERNOTINCHANNEL." << std::endl;
+                }
                  else if (!op)
-                        sendReply(fd, ERR_NOSUCHNICK(nick, this->_line[count]));
+                 {
+                     sendReply(fd, ERR_NOSUCHNICK(nick, this->_line[count]));
+                    std::cerr<<"sent => ERR_NOSUCHNICK." << std::endl;
+                 }
                 break;                 
             }
             case 'l':

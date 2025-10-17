@@ -38,28 +38,28 @@ bool Server::Nickparse(void){
 
 void Server::NICK(void){
 	int fd = this->_currentClient;
+	std::string	nick = this->_client[fd].getnick();
 
 	if (this->_line.size() < 2){
-        // sendReply(fd, ERR_NONICKNAMEGIVEN);
-		std::cout<<"NICK : no params"<<std::endl;
+        sendReply(fd, ERR_NONICKNAMEGIVEN(nick));
+		std::cout<<"sent => ERR_NONICKNAMEGIVEN."<<std::endl;
         return;
     }
 
 	if (!this->_client[fd].getisPassed()){
-		// sendReply(fd, ERR_PASSWDMISMATCH);
-		// OneClean();
+		sendReply(fd, ERR_PASSWDMISMATCH(nick));
+		std::cout<<"sent => ERR_PASSWDMISMATCH."<<std::endl;
 		return;
 	}
-	std::string	nick("*");
-	if (this->_client[fd].getregistered() == false)
-		nick = this->_client[fd].getnick();
 	if (!AlreadyInUse()){
 		sendReply(fd, ERR_NICKNAMEINUSE(nick, this->_line[1]));
+		std::cout<<"sent => ERR_NICKNAMEINUSE."<<std::endl;
 		// OneClean();
 		return;
 	}
 	if (!Nickparse()){
 		sendReply(fd, ERR_ERRONEUSNICKNAME(nick, this->_line[1]));
+		std::cout<<"sent => ERR_ERRONEUSNICKNAME."<<std::endl;
 		// OneClean();
 		return;
 	}

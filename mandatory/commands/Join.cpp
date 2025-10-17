@@ -106,6 +106,8 @@ void Server::JOIN(void){
             if (Chan.is_keyed()){
                 // std::cout<<"key"<<std::endl;
                 if ( i < keys.size() && Chan.GetPassword() == keys[i]){
+                    sendReply(this->_currentClient, RPL_JOIN(this->_client[this->_currentClient].getnick(), chans[i]));
+                    std::cerr<<"sent => RPL_JOIN."<<std::endl;
                     Chan.addMember(*membr);
                 }
                 else {
