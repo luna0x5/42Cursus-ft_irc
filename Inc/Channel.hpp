@@ -61,12 +61,13 @@ class Channel {
         bool                                     is_userLimited( void ) const;
         
         void                                     addMember(Client &client);
+        void                                     rmMember(Client &client);
         void                                     addOps( Client &newOp );
         
         std::string                              getModes( void ) const;
-        std::time_t                              getTime( void )const;
         
         void                                    set_i( char flag );
+        std::time_t                              getTime( void )const;
         void                                    set_t( char flag );
         void                                    set_k( char flag,  const std::string &pass);
         bool                                    set_o( char flag , Client &op );

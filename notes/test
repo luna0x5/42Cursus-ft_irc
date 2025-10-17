@@ -15,3 +15,8 @@ USER DFDS SDFDS DSFSD DSF
 NICK ..
 :localhost 432 lalakoka .. :Erroneous nickname
 ############################################################
+TODO: COMPARE THIS ONE WITH THE SERVER
+MODE #TEST -k 
+
+MODE #TEST +k
+

@@ -118,7 +118,19 @@ Channel::rmOps( Client &newOp )
 void
 Channel::addMember(Client &client)
 {
+    if (!is_Member(client.getnick()))
+        this->incrementCount();
+
     this->_members[client.getnick()] = client;
+}
+
+void
+Channel::rmMember(Client &client)
+{
+    if (is_Member(client.getnick()))
+        this->decrementCount();
+
+    this->_members.erase(client.getnick());
 }
 
 void
