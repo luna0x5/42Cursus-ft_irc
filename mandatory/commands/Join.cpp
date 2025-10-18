@@ -101,6 +101,7 @@ void Server::JOIN(void){
             if (Chan.is_userLimited() == true && Chan.getCapacityLimit() <= (int)Chan.GetMembers().size()){
                 sendReply(this->_currentClient, ERR_CHANNELISFULL(membr->getnick(), Chan.GetName()));
                 std::cerr<<"sent => ERR_CHANNELISFULL."<<std::endl;
+                return ;
             }
             //invite only
             if (Chan.is_keyed()){
