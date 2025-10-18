@@ -1,40 +1,41 @@
-NAME	= ircserv
+NAME	=	ircserv
 
-HEADER	=	server/Server.hpp\
-			client/Client.hpp \
-			channel/Channel.hpp \
-			./Inc/numericalReplies.hpp\
+HEADER	=	./Inc/Server.hpp        \
+			./Inc/Client.hpp  \
+			./Inc/Channel.hpp \
+			./Inc/numericalReplies.hpp \
 
 files	=	main.cpp \
-			server/Server.cpp \
-			client/Client.cpp \
-			server/Server_helper.cpp\
-			commands/Join.cpp \
-			channel/Channel.cpp\
- 			commands/Pass.cpp \
-			commands/Nick.cpp \
-			commands/User.cpp \
-			commands/mode/mode.cpp\
-			commands/mode/utils.cpp\
-			commands/Topic.cpp \
-			commands/Privmsg.cpp \
-			commands/Kick.cpp \
-			commands/Invite.cpp
-
+			mandatory/server/Server.cpp \
+			mandatory/server/Server_helper.cpp\
+			mandatory/client/Client.cpp \
+			mandatory/channel/Channel.cpp\
+			mandatory/commands/Join.cpp \
+ 			mandatory/commands/Pass.cpp \
+			mandatory/commands/Nick.cpp \
+			mandatory/commands/User.cpp \
+			mandatory/commands/Kick.cpp \
+			mandatory/commands/Invite.cpp \
+			mandatory/commands/Privmsg.cpp \
+			mandatory/commands/Topic.cpp \
+			mandatory/commands/mode/mode.cpp\
+			mandatory/commands/mode/utils.cpp\
+			bonus/bot/bot.cpp
 
 obj		:= $(files:.cpp=.o)
 
-Cpp		= g++
+Cpp		=	c++
 
-FLAGS	= -Wall -Wextra -Werror -std=c++98 -I./Inc
+FLAGS	=  -Wall -Wextra -Werror -std=c++98  -I./Inc
 
 all : $(NAME)
 
-$(NAME) : $(obj)
-		$(Cpp) $(FLAGS) -o $@ $^
 
-%.o:%.cpp $(HEADER)
-		$(Cpp) $(FLAGS) -c $< -o $@
+$(NAME) : $(obj)
+	@$(Cpp) $(FLAGS) $(obj) $(LIBRARY) -o $(NAME)
+
+%.o: %.cpp $(HEADER)
+	$(Cpp) $(FLAGS) -c $< -o $@
 
 clean:
 		rm -rf $(obj)
@@ -42,14 +43,14 @@ clean:
 fclean: clean
 		rm -rf $(NAME)
 
-re: fclean all4
+re: fclean all
 
-commit:
-	git add .
-	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"  
+commit: fclean
+		git add .
+		git commit -m "$(filter-out $@, $(MAKECMDGOALS))"  
 
-push:
-	git add .
-	git status
-	git commit -m "$(filter-out $@, $(MAKECMDGOALS))"
-	git push
+push: fclean
+		git add .
+		git status
+		git commit -m "$(filter-out $@, $(MAKECMDGOALS))"
+		git push
