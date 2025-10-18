@@ -27,12 +27,13 @@ enum Commands {
     NICK_cmd,
     USER_cmd,
     JOIN_cmd,
-    PART_cmd,
+    PART_cmd, //TODO: DO WE NEED TO IMPLEMENT PART?
     MODE_cmd,
     TOPIC_cmd,
     KICK_cmd,
     INVITE_cmd,
     BOT_CMD,
+	PRIVMSG_cmd,
     UNKNOWN_cmd
 };
 
@@ -91,6 +92,11 @@ class Server
 
             void        USER(void);
 
+			void		INVITE(void);
+			void		KICK(void);
+			void		PRIVMSG(void);
+			void		TOPIC(void);
+
             void                checkErr(const int res, const int err, const char *msg);
             Channel*            channelExist( const std::string &name );
             Client*             userExist( const std::string &nick);
@@ -111,6 +117,7 @@ class Server
 
             bool        Already_in_channel(Channel &chan, const std::string &nick);
 
+			int         IsChannelExist(std::string ChanName);
         //     bool        Invite_only(Channel &chan);
         //     void        sendReply(const reply code, const std::string cmdName);
 

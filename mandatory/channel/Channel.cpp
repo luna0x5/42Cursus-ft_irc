@@ -252,16 +252,26 @@ Channel::getTime( void )const
     return this->_creationTime;
 }
 
+// void
+// Channel::broadcastReply(const std::string &reply)
+// {
+//     if (this->changedModes.empty())
+//         return ;
+
+//     std::map<std::string, Client>   members = this->GetMembers();
+//     constmap_it                     clients = members.begin();
+
+//     for (; clients !=  members.end(); clients++)
+//         Server::sendReply(clients->second.getFd(), reply);
+//     std::cerr<<"sent => RPL_MODE."<<std::endl;
+// }
+
 void
 Channel::broadcastReply(const std::string &reply)
 {
-    if (this->changedModes.empty())
-        return ;
-
     std::map<std::string, Client>   members = this->GetMembers();
     constmap_it                     clients = members.begin();
 
     for (; clients !=  members.end(); clients++)
         Server::sendReply(clients->second.getFd(), reply);
-    std::cerr<<"sent => RPL_MODE."<<std::endl;
 }

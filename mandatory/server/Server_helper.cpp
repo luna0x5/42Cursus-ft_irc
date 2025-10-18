@@ -44,6 +44,7 @@ void Server::initCmds(void){
     this->_cmd["KICK"] = KICK_cmd;
     this->_cmd["INVITE"] = INVITE_cmd;
     this->_cmd["/BOT"] = BOT_CMD;
+    this->_cmd["PRIVMSG"] = PRIVMSG_cmd;
 }
 
 int Server::GetCmds(void){
@@ -76,16 +77,19 @@ void Server::commands_handler(){
             MODE();
             break;
         case 6:
-            std::cout<<"TOPIC"<<std::endl;
+            TOPIC();
             break;
         case 7:
-            std::cout<<"KICK"<<std::endl;
+            KICK();
             break;
         case 8:
-            std::cout<<"INVITE"<<std::endl;
+            INVITE();
             break;
         case 9:
             this->BOT();
+            break;
+        case 10:
+            PRIVMSG();
             break;
         default:{
             std::cout<<"UNKNOWN : ";
@@ -178,4 +182,11 @@ void        Server::OneClean(void){
         }
     }
 
+}
+
+int Server::IsChannelExist(std::string ChanName)
+{
+    if (_channel.find(ChanName) != _channel.end())
+        return 1;
+    return 0;
 }

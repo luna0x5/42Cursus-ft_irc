@@ -43,8 +43,10 @@ class Channel {
         void                                    incrementCount( void );
         void                                    decrementCount( void );
         
+        std::string topic;
+		std::vector<std::string> invitedUsers;
         
-        public:
+		public:
         typedef std::map<std::string, Client >::const_iterator    constmap_it;
         typedef std::map<std::string, Client >::iterator           map_it;
         
@@ -73,6 +75,9 @@ class Channel {
         bool                                    set_o( char flag , Client &op );
         void                                    set_l( char flag , const std::string &num);
         
+		bool	get_t(void) { return(_t); } //TODO: IMPLEMENT IN DIFFERNT FILE
+		bool	get_i(void) { return(_i); } //TODO: IMPLEMENT IN DIFFERNT FILE
+
         std::string                             args;
         std::string                             changedModes;
         bool                                    brdcast;
@@ -83,9 +88,51 @@ class Channel {
         void SetName(std::string& name);
         std::string& GetPassword(void);
         
+		//TODO: TO PUT THE DEFINITION IN DIFFERENT FILE
+		const std::string& getTopic() const { return topic; }
+	    void setTopic(const std::string& top) { topic = top; }
+		bool hasTopic() const { return !topic.empty(); }
+		void addInvite(const std::string &nick)
+		{
+			// Avoid duplicates
+			if (!isInvited(nick))
+				invitedUsers.push_back(nick);
+		}
+
+		bool isInvited(const std::string &nick) const
+		{
+			for (size_t i = 0; i < invitedUsers.size(); ++i)
+			{
+				if (invitedUsers[i] == nick)
+					return true;
+			}
+			return false;
+		}
+
+		void removeInvite(const std::string &nick)
+		{
+			for (std::vector<std::string>::iterator it = invitedUsers.begin();
+				it != invitedUsers.end(); ++it)
+			{
+				if (*it == nick)
+				{
+					invitedUsers.erase(it);
+					return;
+				}
+			}
+		}
+		void removeMember(const std::string &nick)
+		{
+			std::map<std::string, Client>::iterator it = _members.find(nick);
+			if (it != _members.end())
+			{
+				_members.erase(it);
+				if (_membersCount > 0)
+					_membersCount--;
+			}
+		}
         //bot        // const bool getModes( void ) const;
         // const bool getModes( void ) const;
         //get username of ops
-    };
-    
+	};
     #endif

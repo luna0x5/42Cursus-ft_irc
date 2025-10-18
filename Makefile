@@ -14,6 +14,10 @@ files	=	main.cpp \
  			mandatory/commands/Pass.cpp \
 			mandatory/commands/Nick.cpp \
 			mandatory/commands/User.cpp \
+			mandatory/commands/Kick.cpp \
+			mandatory/commands/Invite.cpp \
+			mandatory/commands/Privmsg.cpp \
+			mandatory/commands/Topic.cpp \
 			mandatory/commands/mode/mode.cpp\
 			mandatory/commands/mode/utils.cpp\
 			bonus/bot/bot.cpp

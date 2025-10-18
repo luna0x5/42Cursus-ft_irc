@@ -58,6 +58,7 @@ class Client {
 
         void            setFd(const int fd);
         int             getFd( void ) const;
+		std::string		getPrefix() const;
 
 };
 

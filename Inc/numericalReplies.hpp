@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
+/*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/17 00:13:16 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/18 16:57:18 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@
 #define RPL_CMD_USER         (std::string("USER <user> 0 * :<realname>    => Register username and real name"))
 #define RPL_CMD_JOIN         (std::string("JOIN <chan> [key]              => Join or create a channel"))
 #define RPL_CMD_PART         (std::string("PART <chan>                    => Leave a channel"))
-#define RPL_CMD_MODE         (std::string("MODE <chan> [modes]            => View or change channel modes"))
-#define RPL_CMD_TOPIC        (std::string("TOPIC <chan> [topic]           => View or set topic"))
-#define RPL_CMD_KICK         (std::string("KICK <chan> <nick>             => Kick a user"))
-#define RPL_CMD_PRIVMSG      (std::string("PRIVMSG <target> :<msg>        => Send a private message"))
-#define RPL_CMD_NOTICE       (std::string("NOTICE <target> :<msg>         => Send a notice"))
+#define RPL_CMD_MODE         (std::string("MODE <chan> [modes]            => View or change channel modes")) 
+#define RPL_CMD_TOPIC        (std::string("TOPIC <chan> [topic]           => View or set topic")) // TODO: needs changes
+#define RPL_CMD_KICK         (std::string("KICK <chan> <nick>             => Kick a user")) // TODO: needs changes
+#define RPL_CMD_PRIVMSG      (std::string("PRIVMSG <target> :<msg>        => Send a private message")) // TODO: needs changes
+#define RPL_CMD_NOTICE       (std::string("NOTICE <target> :<msg>         => Send a notice")) // TODO: DO we need to iplement notice ?
 #define RPL_CMD_QUIT         (std::string("QUIT [:msg]                    => Disconnect"))
 
 // Mode options (indented under MODE)
@@ -76,6 +76,13 @@
 #define ERR_PASSWDMISMATCH(clnt)          (std::string(":") + SERVERNAME + " 464 " + clnt + " :Incorrect password\r\n")
 #define ERR_INVITEONLYCHAN(clnt, chnl)    (std::string(":") + SERVERNAME + " 473 " + clnt + " " + chnl + " :Invite only channel\r\n")
 #define ERR_CHANNELISFULL(clnt, chnl)     (std::string(":") + SERVERNAME + " 471 " + clnt + " " + chnl + " :Channel is full\r\n")
+
+#define ERR_NOTEXTTOSEND(clnt, cmd)		  (std::string(":") + SERVERNAME + " 412 " + clnt + " " + cmd + " :No text to send\r\n") //TODO: PROBABLY INCORRECT FORMAT
+#define ERR_CANNOTSENDTOCHAN(clnt, chnl)  (std::string(":") + SERVERNAME + " 404 " + clnt + " " + chnl + " :Cannot send to channel\r\n") //TODO: PROBABLY INCORRECT FORMAT
+#define RPL_NOTOPIC(clnt, chnl)		      (std::string(":") + SERVERNAME + " 331 " + clnt + " " + chnl + " :No topic is set\r\n") //TODO: PROBABLY INCORRECT FORMAT
+#define RPL_TOPIC(clnt, chnl, topic)	  (std::string(":") + SERVERNAME + " 332 " + clnt + " " + chnl + " :" + topic + "\r\n") //TODO: PROBABLY INCORRECT FORMAT
+#define ERR_USERONCHANNEl(tnick, chnl)	  (std::string(":") + SERVERNAME + " 443 " + tnick + " " + chnl + " :is already on channel\r\n") //TODO: PROBABLY INCORRECT FORMAT
+#define RPL_INVITING(clnt, tnick, chnl)	  (std::string(":") + SERVERNAME + " 341 " + clnt + " " + tnick + " " + chnl + " :invite\r\n") //TODO: PROBABLY INCORRECT FORMAT
 
 // Bonus help bot replies
 #define ERR_HELPNOTFOUND(clnt, subject)   (std::string(":") + SERVERNAME + " 524 " + clnt + " " + subject + " :No help available on this topic\r\n") 

@@ -113,3 +113,8 @@ Client::getFd( void ) const
 {
     return this->_fd;
 }
+
+std::string Client::getPrefix() const //TODO: CHECK IF IT DOES EXIST
+{
+	return this->nickname + "!~" + this->nickname + "@localhost";
+}
