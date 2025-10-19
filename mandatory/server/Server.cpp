@@ -14,7 +14,7 @@ Server::~Server()
    cleaner();
 }
 
-int 
+int
 Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
 {
     int err;
@@ -25,7 +25,7 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
     
     int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
     checkErr(flag, -1, "Error: Failed to get server socket status flag!");
-    flag |= O_NONBLOCK; 
+    flag |= O_NONBLOCK;
     err = fcntl(this->_Socket_fd, F_SETFL , flag);// setting the socket to non blocking for concurrency
     checkErr(err, -1, "Error: Failed to set socket flag!");
 
