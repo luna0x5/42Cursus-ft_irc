@@ -60,6 +60,8 @@ Server::running_server(int Socket_fd)
     // while(true)
     {
         int monitor = poll(this->_poll_fds.data(), this->_poll_fds.size(), -1);//poll to monitor multiple fds without i/o blocking
+        if (monitor == -1 && errno == EINTR)
+            continue;
         checkErr(monitor, -1, "Error : Failed poll");
 
         for (size_t i = 0; i < this->_poll_fds.size(); i++)

@@ -17,6 +17,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <signal.h>
+#include <cerrno>
 
 #include "numericalReplies.hpp"
 // #include "Channel.hpp"
