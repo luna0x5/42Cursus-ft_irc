@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <signal.h>
 #include <cerrno>
+#include <sys/resource.h>
 
 #include "numericalReplies.hpp"
 // #include "Channel.hpp"
@@ -29,7 +30,6 @@ enum Commands {
     NICK_cmd,
     USER_cmd,
     JOIN_cmd,
-    PART_cmd, //TODO: DO WE NEED TO IMPLEMENT PART?
     MODE_cmd,
     TOPIC_cmd,
     KICK_cmd,
@@ -70,6 +70,7 @@ class Server
 
             int         server_socket(void);
             void        running_server(int Socket_fd);
+            void        remove_client(int fd, int i);
 
             void        handle_new_connections(int Socket_fd);
             void        handle_client_data(int fd);

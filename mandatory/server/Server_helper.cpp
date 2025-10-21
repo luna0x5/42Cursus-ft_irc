@@ -21,7 +21,7 @@ Server::handle_new_connections(int Socket_fd)
     new_fd.fd = new_socket;
     new_fd.events = POLLIN;
     this->_poll_fds.push_back(new_fd);
-    this->_client[new_fd.fd] = Client();
+    this->_client[new_fd.fd] = Client(new_fd.fd);
 }
 
 void Server::handle_client_data(int fd){
@@ -38,7 +38,6 @@ void Server::initCmds(void){
     this->_cmd["NICK"] = NICK_cmd;
     this->_cmd["USER"] = USER_cmd;
     this->_cmd["JOIN"] = JOIN_cmd;
-    this->_cmd["PART"] = PART_cmd;
     this->_cmd["MODE"] = MODE_cmd;
     this->_cmd["TOPIC"] = TOPIC_cmd;
     this->_cmd["KICK"] = KICK_cmd;
@@ -138,24 +137,13 @@ void Server::parse_cmd(std::string cmd){
     commands_handler();
 }
 
-
-
-// void Server::Sender(std::string num){
-//     std::string to_client   = ":localhost" + num + this->_client[this->_currentClient].getnick() + " :Welcome to our server\r\n";
-//     int         bytes       = send(this->_currentClient, to_client.c_str(), to_client.length(), 0);
-//     if(bytes < 0){
-//         std::cerr<<"failed send data "<<std::endl;
-//     }
-// }
-
 void Server::cleaner(void){
     for(size_t i=0; i < this->_poll_fds.size(); i++){
         close(this->_poll_fds[i].fd);
-        _client.erase(this->_poll_fds[i].fd);
-        this->_poll_fds.erase(this->_poll_fds.begin() + i);
-        i--;
     }
-    exit(1);
+    _client.clear();
+    this->_poll_fds.clear();
+    exit(0);
 }
 
 void

@@ -1,7 +1,18 @@
 #include "Client.hpp"
 
-Client::Client():isPassed(0),registered(0), nickname("*"){
+Client::Client():isPassed(0),registered(0), nickname("*"), _fd(-1){
+    this->username = "*";
+    this->realname = "*";
+    this->isUser = 0;
+    this->isNick = 0;
 
+}
+
+Client::Client(int fd):isPassed(0),registered(0), nickname("*"), _fd(fd){
+    this->username = "*";
+    this->realname = "*";
+    this->isUser = 0;
+    this->isNick = 0;
 }
 
 Client::~Client(){
@@ -48,6 +59,10 @@ bool Client::getregistered(void){
 
 ////////////////////////////
 
+int  Client::get_fd(void){
+    return _fd;
+}
+
 bool Client::getisPassed(void){
     return this->isPassed;
 }
@@ -83,7 +98,7 @@ void Client::setregistered(bool r){
 //     return this->reg_done;
 // }
 
-std::string Client::getnick(void){
+std::string Client::getnick(void) const{
     return this->nickname;
 }
 void Client::setnick(std::string nick){

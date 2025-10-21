@@ -80,7 +80,7 @@ Server::parseMode( void )
             flag = this->_line[2][i];
     }
 
-    if (channel->is_Op(nick) == false)
+    if (channel->is_Op(fd) == false)
         return std::cerr<<"sent => ERR_CHANOPRIVSNEEDED."<<std::endl, ERR_CHANOPRIVSNEEDED(nick, chName);
 
     return "";
@@ -145,7 +145,7 @@ Server::MODE( void )
             {
                 count++;
                 Client  *op = this->userExist(this->_line[count]);
-                if (op && channel->set_o(flag, *op) == false)
+                if (op && channel->set_o(flag, op) == false)
                 {
                     sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], channel->GetName()));
                     std::cerr<<"sent => ERR_USERNOTINCHANNEL." << std::endl;

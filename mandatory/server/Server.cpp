@@ -15,7 +15,7 @@ Server::~Server()
 }
 
 int
-Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
+Server::server_socket()
 {
     int err;
 
@@ -84,16 +84,11 @@ Server::running_server(int Socket_fd)
                     int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer) - 1, 0);
                     if (bytes <= 0)
                     {
-                        //     if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                        //     std::cout<<"no data"<<std::endl;
-                        //     }
-                        // else {
-                        close(this->_poll_fds[i].fd);
-                        std::cout<<  " -> client : " <<this->_poll_fds[i].fd << " is disconnected!" <<std::endl;
-                        _client.erase(this->_poll_fds[i].fd);
-                        this->_poll_fds.erase(this->_poll_fds.begin() + i);
+                        if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+                            continue; // No data available right now, try again later
+                        }
+                        remove_client(this->_poll_fds[i].fd, i);
                         i--;
-                        // }
                     }
                     else
                     {
@@ -131,4 +126,29 @@ Server::checkErr(const int res, const int err, const char *msg)
 
 void Server::Handler(int){
     flag = 1;
+}
+
+void Server::remove_client(int fd, int i){
+    for (ch_it it = this->_channel.begin(); it != this->_channel.end();){
+        Channel &chan = it->second;
+        std::string message = ":" + this->_client[fd].getPrefix() + " QUIT " + chan.GetName() + "\r\n";
+        if (chan.is_Member(this->_client[fd].getnick())){
+            chan.rmMember(&this->_client[fd]);
+            chan.broadcastReply(message);
+            if (chan.is_Op(fd)){
+                chan.rmOps(&this->_client[fd]);
+            }
+            if (chan.getMembersCount() == 0){
+                ch_it tmp = it;
+                ++it;
+                this->_channel.erase(tmp);
+                continue;
+            }
+        }
+        ++it;
+    }
+    close(fd);
+    std::cout<<  " -> client : " <<fd << " is disconnected!" <<std::endl;
+    _client.erase(fd);
+    this->_poll_fds.erase(this->_poll_fds.begin() + i);
 }

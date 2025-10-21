@@ -5,6 +5,13 @@ int main(int ac, char **av) {
         std::cerr <<" <port> <password>" << std::endl;
         return 1;
     }
+//     struct rlimit rl;
+// getrlimit(RLIMIT_NOFILE, &rl);
+// std::cout << "Soft limit: " << rl.rlim_cur << ", Hard limit: " << rl.rlim_max << std::endl;
+
+//     std::cout << "EAGAIN: " << EAGAIN << std::endl;
+//     std::cout << "EWOULDBLOCK: " << EWOULDBLOCK << std::endl;
+
     int port;
     std::stringstream ss(av[1]);
     ss >> port;
