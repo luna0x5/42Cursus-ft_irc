@@ -30,6 +30,7 @@ enum Commands {
     NICK_cmd,
     USER_cmd,
     JOIN_cmd,
+    PART_cmd,
     MODE_cmd,
     TOPIC_cmd,
     KICK_cmd,

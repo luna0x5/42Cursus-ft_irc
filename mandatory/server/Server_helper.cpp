@@ -38,6 +38,7 @@ void Server::initCmds(void){
     this->_cmd["NICK"] = NICK_cmd;
     this->_cmd["USER"] = USER_cmd;
     this->_cmd["JOIN"] = JOIN_cmd;
+    this->_cmd["PART"] = PART_cmd;
     this->_cmd["MODE"] = MODE_cmd;
     this->_cmd["TOPIC"] = TOPIC_cmd;
     this->_cmd["KICK"] = KICK_cmd;
