@@ -6,7 +6,7 @@
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 02:47:29 by hmoukit           #+#    #+#             */
-/*   Updated: 2025/10/23 16:07:52 by hmoukit          ###   ########.fr       */
+/*   Updated: 2025/10/23 16:14:37 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void Server::PRIVMSG(void)
 				continue;
 			}
 			std::string msg = ":" + sender.getPrefix() + " PRIVMSG " + target + " :" + message + "\r\n";
-			chan.broadcastReply(msg); //TODO: there's a problem after this line the message doesn't get broadcasted
+			chan.broadcastReply(msg);
 		}
         else
         {

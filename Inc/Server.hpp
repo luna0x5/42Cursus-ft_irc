@@ -45,7 +45,7 @@ class Server
             int                             _Socket_fd;
             std::map<int, Client>           _client;
             int                             _currentClient;
-            std::map<std::string, Channel>  _channel;// TODO:
+            std::map<std::string, Channel>  _channel;
             std::vector<pollfd>             _poll_fds;
             std::vector<std::string>        _line;
             std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
@@ -120,15 +120,8 @@ class Server
 
 			int         IsChannelExist(std::string ChanName);
 
-			//TODO: implement in a different file
-			bool getChekPriv(void)
-			{
-				return (checkPriv);
-			}
-			void setCheckPriv(bool check)
-			{
-				checkPriv = check;
-			}
+			bool getChekPriv(void);
+			void setCheckPriv(bool check);
         //     bool        Invite_only(Channel &chan);
         //     void        sendReply(const reply code, const std::string cmdName);
 

@@ -189,3 +189,13 @@ int Server::IsChannelExist(std::string ChanName)
         return 1;
     return 0;
 }
+
+bool Server::getChekPriv(void)
+{
+	return (checkPriv);
+}
+
+void Server::setCheckPriv(bool check)
+{
+	checkPriv = check;
+}
