@@ -1,9 +1,13 @@
 NAME	=	ircserv
 
-HEADER	=	./Inc/Server.hpp        \
+NAME_B	=	irc_bot
+
+HEADER	=	./Inc/Server.hpp \
 			./Inc/Client.hpp  \
-			./Inc/Channel.hpp \
+			./Inc/Channel.hpp  \
 			./Inc/numericalReplies.hpp \
+
+B_HEADER =	bonus/bot/botClient.hpp \
 
 files	=	main.cpp \
 			mandatory/server/Server.cpp \
@@ -22,7 +26,12 @@ files	=	main.cpp \
 			mandatory/commands/mode/utils.cpp\
 			bonus/bot/bot.cpp
 
+B_files	=	bonus/bot/main.cpp \
+			bonus/bot/botClient.cpp \
+
 obj		:= $(files:.cpp=.o)
+
+B_obj		:= $(B_files:.cpp=.o)
 
 Cpp		=	c++
 
@@ -30,9 +39,13 @@ FLAGS	=  -Wall -Wextra -Werror -std=c++98  -I./Inc
 
 all : $(NAME)
 
+bonus: $(NAME_B)
 
 $(NAME) : $(obj)
-	@$(Cpp) $(FLAGS) $(obj) $(LIBRARY) -o $(NAME)
+	@$(Cpp) $(FLAGS) $(obj) -o $(NAME)
+
+$(NAME_B) : $(B_obj)
+	@$(Cpp) $(FLAGS) $(B_obj) -o $(NAME_B)
 
 %.o: %.cpp $(HEADER)
 	$(Cpp) $(FLAGS) -c $< -o $@
