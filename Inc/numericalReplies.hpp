@@ -6,7 +6,7 @@
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/23 18:14:35 by hmoukit          ###   ########.fr       */
+/*   Updated: 2025/10/26 16:52:14 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@
 #define RPL_TOPIC(chnl, topic)	  		  (std::string(":") + SERVERNAME + " 332 " + chnl + " :" + topic + "\r\n")
 #define ERR_USERONCHANNEl(tnick, chnl)	  (std::string(":") + SERVERNAME + " 443 " + tnick + " " + chnl + " :is already on channel\r\n")
 #define RPL_INVITING(clnt, tnick, chnl)	  (std::string(":") + SERVERNAME + " 341 " + clnt + " " + tnick + " " + chnl + " :invite\r\n")
+#define ERR_NORECIPIENT(clnt, cmd) 		  (std::string(":") + SERVERNAME + " 411 " + clnt + " " + cmd + " :No recipient given\r\n")
+
 
 // Bonus help bot replies
 #define ERR_HELPNOTFOUND(clnt, subject)   (std::string(":") + SERVERNAME + " 524 " + clnt + " " + subject + " :No help available on this topic\r\n") 

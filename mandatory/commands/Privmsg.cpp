@@ -6,7 +6,7 @@
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 02:47:29 by hmoukit           #+#    #+#             */
-/*   Updated: 2025/10/23 17:09:41 by hmoukit          ###   ########.fr       */
+/*   Updated: 2025/10/26 16:50:29 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,27 @@ void Server::PRIVMSG(void)
 	if (getChekPriv())
 	{
 		setCheckPriv(false);
-		targets = args[2];
-		message = args[1].substr(1);
+		if (args.size() > 2)
+		{
+			message = args[1].substr(1);
+			targets = args[2];
+		}
+		else
+		{
+			sendReply(sender.getFd(), ERR_NORECIPIENT(sender.getnick(), "PRIVMSG"));
+			return;
+		}
 	}
+
 	else
 	{
 		targets = args[1];
 		for(size_t i = 2; i < args.size(); ++i)
 		{
 			if (i == 2 && args[i][0] == ':')
-				message += args[i].substr(1);
+			message += args[i].substr(1);
 			else
-				message += " " + args[i];
+			message += " " + args[i];
 		}
 	}
 	if (message.empty())
