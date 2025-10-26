@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/26 15:39:17 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/26 16:31:49 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ botClient::startBot()
         std::string line = recieve();
         if (!line.empty())
         {
+            if (line.find("privmsg"))
             std::cout << "BOT RCV: " << line << std::endl; // For debugging
             Server::sendReply(this->_socketFd, line);
             
