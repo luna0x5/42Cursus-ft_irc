@@ -8,6 +8,7 @@ HEADER	=	./Inc/Server.hpp \
 			./Inc/numericalReplies.hpp \
 
 B_HEADER =	bonus/bot/botClient.hpp \
+			bonus/Inc/bot.hpp.hpp \
 
 files	=	main.cpp \
 			mandatory/server/Server.cpp \
@@ -26,8 +27,10 @@ files	=	main.cpp \
 			mandatory/commands/mode/utils.cpp\
 			bonus/bot/bot.cpp
 
-B_files	=	bonus/bot/main.cpp \
+B_files	=	bonus/main.cpp \
 			bonus/bot/botClient.cpp \
+			bonus/bot/botActions.cpp \
+			bonus/tools.cpp			  \
 
 obj		:= $(files:.cpp=.o)
 
@@ -51,10 +54,10 @@ $(NAME_B) : $(B_obj)
 	$(Cpp) $(FLAGS) -c $< -o $@
 
 clean:
-		rm -rf $(obj)
+		rm -rf $(obj) $(B_obj)
 
 fclean: clean
-		rm -rf $(NAME)
+		rm -rf $(NAME) $(NAME_B)
 
 re: fclean all
 

@@ -6,47 +6,67 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:17:55 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/25 21:39:15 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/27 15:25:12 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include "Server.hpp"
+// #include "Server.hpp"
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <iostream>
+#include <vector>
+#include <map>
+#include <unistd.h>
+#include <netdb.h>
+#include <sstream>
+#include <string>
+#include <ctime>
+#include <cerrno>
+#include <algorithm>
+
+typedef struct msg
+{
+    std::string target;
+    std::string content;
+} msg;
 
 class botClient
 {
     private:
-        std::string _nick;
-        std::string _username;
-        
-        std::string _pass;
-        std::string _serverIp;
-        
-        int         _port;
-        int         _socketFd;
-
-        std::string _buffer;
-
-    public:
-    
-        botClient(const char* pass, const char* nick,
-                  const char* username, const char* serverip, int port);
         botClient(const botClient& other);
         botClient& operator=(const botClient& other);
+    
+        int         _socketFd;
+        std::string _serverAddress;
+        int         _serverPort;
+        sockaddr_in  address;
+        std::string _nick;
+        std::string _password;
+        
+
+
+                
+        typedef void (botClient::*commands)(const std::string &);
+        std::map<std::string, commands> commandList;
+        
+        void    registerCommands(void);
+        void    greeting(const std::string &target);
+        void    ping(const std::string &target);
+        void    stime(const std::string &target);
+        
+        msg     _parseMsg(const std::string &line);
+        void    privmsg(const std::string &target, const std::string &message); 
+
+            
+    public:
+
+        botClient(const std::string& nick);
         ~botClient();
         
-        void    establishConnection( void );
-        void    authenticate( void );
-        
-        void    startBot();
-        
-        
-    private:
+        void    prompt( void );
 
-        // void    send();10ms
-        const std::string&    recieve();
-        std::string _trim(const std::string& s);
-        
+        void    establishConnection(); // ===> 
+        void    authenticate();
+        void    startBot();        
 };

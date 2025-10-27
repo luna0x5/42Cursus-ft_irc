@@ -42,7 +42,6 @@ void Server::initCmds(void){
     this->_cmd["TOPIC"] = TOPIC_cmd;
     this->_cmd["KICK"] = KICK_cmd;
     this->_cmd["INVITE"] = INVITE_cmd;
-    this->_cmd["/BOT"] = BOT_CMD;
     this->_cmd["PRIVMSG"] = PRIVMSG_cmd;
 
 }
@@ -83,9 +82,6 @@ void Server::commands_handler(){
             INVITE();
             break;
         case 8:
-            this->BOT();
-            break;
-        case 9:
             PRIVMSG();
             break;
         default:{

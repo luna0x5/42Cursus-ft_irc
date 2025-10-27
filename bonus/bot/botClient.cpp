@@ -6,145 +6,209 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/26 16:31:49 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/27 15:27:46 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "botClient.hpp"
+#include "../Inc/bot.hpp"
+#include <fcntl.h>
 
-botClient::botClient(const char* pass, const char* nick, 
-                    const char* username, const char* serverip,
-                    int port):_nick(nick), _username(username), _pass(pass), 
-                    _serverIp(serverip), _port(port), _socketFd(-1) {}
-
-botClient::botClient(const botClient& other)
+botClient::botClient(const std::string& nick)
 {
-    *this = other;
-}
+    this->_nick = nick;
+    registerCommands();
 
-botClient&
-botClient::operator=(const botClient& other)
-{
-    if (this != &other)
-    {
-        if (this->_socketFd != -1)
-            close(this->_socketFd);
-        this->_pass = other._pass;
-        this->_nick = other._nick;
-        this->_username = other._username;
-        this->_serverIp = other._serverIp;
-        this->_port = other._port;
-        // this->_socketFd = other._socketFd; 
+    this->_socketFd = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (this->_socketFd == -1)
+        throw std::runtime_error("Error: Failed to create bot socket!");
+    
+    int flags = fcntl(this->_socketFd, F_GETFL, 0);
+    if (flags == -1) { 
+        close(this->_socketFd); 
+        throw std::runtime_error("Error: Failed to get socket flags!");
     }
-    return *this;
+    if (fcntl(this->_socketFd, F_SETFL, flags | O_NONBLOCK) == -1) {
+        close(this->_socketFd);
+        throw std::runtime_error("Error: Failed to set socket to non-blocking!");
+    }
 }
 
 botClient::~botClient()
 {
-    if (this->_socketFd != -1)
-        close(this->_socketFd);
+    close(this->_socketFd);
 }
+
 
 void
-botClient::establishConnection( void )
+botClient::establishConnection()
 {
-    this->_socketFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (this->_socketFd == -1)
-        throw std::runtime_error("Error: Failed to create bot socket!");
+    this->address.sin_family = AF_INET;
+    this->address.sin_port = htons(this->_serverPort);
 
-    sockaddr_in serv_Address;
-    serv_Address.sin_family = AF_INET;
-    serv_Address.sin_port = htons(this->_port);
-    serv_Address.sin_addr.s_addr = inet_addr(this->_serverIp.c_str());
+    WLOG( "Connecting to " << this->_serverAddress << ":" << this->_serverPort );
 
-    if(connect(this->_socketFd, (sockaddr *)&serv_Address, sizeof(serv_Address)) == -1)
-        throw std::runtime_error("Error: Connection to server failed!");
-}
-
-void
-botClient::authenticate( void )
-{
-
-    std::string pass = "PASS " + this->_pass + "\r\n";
-    std::string nick = "NICK " + this->_nick + "\r\n";
-    std::string user = "USER " + this->_username + " 0 * :bot\r\n";
-    // if (send(this->_socketFd, pass.c_str(), pass.length(), 0) == -1
-    //   || send(this->_socketFd, nick.c_str(), nick.length(), 0) == -1
-    //   || send(this->_socketFd, user.c_str(), user.length(), 0) == -1)
-    //     throw std::runtime_error("Error: authentication with server failed!");
-
-    if (send(this->_socketFd, pass.c_str(), pass.length(), 0) == -1)
-        throw std::runtime_error("Error: authentication with server failed!");
-    usleep(10000);
-    if (send(this->_socketFd, nick.c_str(), nick.length(), 0) == -1)
-        throw std::runtime_error("Error: authentication with server failed!");
-    usleep(10000);
-    if (send(this->_socketFd, user.c_str(), user.length(), 0) == -1)
-        throw std::runtime_error("Error: authentication with server failed!");
-
-    
-    char buf[1024];
-    int n = recv(this->_socketFd, &buf, 1023, 0);
-    if (n  == -1)
-        throw std::runtime_error("Error: authentication with server failed!");
-
-    buf[n] = 0;
-    std::string buff(buf);
-    if (buff.find("001") == std::string::npos)
-        throw std::runtime_error("Error: authentication with server failed!");    
-}
-
-const std::string&
-botClient::recieve()
-{
-    char buf[1024];
-    int n = recv(this->_socketFd, &buf, sizeof(buf) - 1, 0);
-    if (n  == 0)
-        throw std::runtime_error("Error: server disconnected!");
-    
-    if (n == -1) 
+    if (this->_serverAddress == LOCALHOST)
     {
-        if (errno == EWOULDBLOCK || errno == EAGAIN)
-            return "";
-        throw std::runtime_error("Error: recv failed!");
+        this->address.sin_addr.s_addr = inet_addr(this->_serverAddress.c_str());
     }
-    buf[n] = 0;
-    this->_buffer += buf;
-    size_t crlf_pos = this->_buffer.find("\r\n");
-    if (crlf_pos != std::string::npos) {
-        std::string line = this->_buffer.substr(0, crlf_pos);
-        this->_buffer.erase(0, crlf_pos + 2);
-        return line;
+    else{
+          struct hostent *host_info = gethostbyname(this->_serverAddress.c_str());
+
+        if (host_info == NULL)
+        {
+            std::string error_msg = "Error: DNS lookup failed for '" + this->_serverAddress + "': ";
+            switch (h_errno) {
+                case HOST_NOT_FOUND: error_msg += "Host not found."; break;
+                case NO_ADDRESS:     error_msg += "No IP address found for host."; break;
+                case NO_RECOVERY:    error_msg += "Non-recoverable name server error."; break;
+                case TRY_AGAIN:      error_msg += "Temporary error in name server. Try again."; break;
+                default:             error_msg += "Unknown DNS error."; break;
+            }
+            throw std::runtime_error(error_msg);
+        }
+
+        this->address.sin_addr.s_addr = *(in_addr_t *)host_info->h_addr_list[0];
+        LOG("DNS resolved " << this->_serverAddress << " to " << inet_ntoa(this->address.sin_addr));
     }
-    return "";
+
+    if (connect(this->_socketFd, (struct sockaddr *)&this->address, sizeof(this->address)) == -1)
+    {
+        if (errno == EINPROGRESS) {
+            WLOG("Connection in progress (non-blocking)...");
+        }
+        else {
+            throw std::runtime_error("Error: Failed to connect to server ");
+        }
+    }
+    else {
+        LOG("Connection established immediately.");
+    }
+    sleep(1);
 }
 
-std::string
-botClient::_trim(const std::string& s) {
-    size_t start = 0;
-    size_t end = s.size();
+void
+botClient::authenticate()
+{
+    std::string auth[3] = {
+        "PASS " + this->_password + "\r\n",
+        "NICK " + this->_nick + "\r\n",
+        "USER " + this->_nick + " 0 * :" + this->_nick + "\r\n"
+    };
+    int i = 0;
+    if (this->_password.empty())
+        i++;
 
-    while (start < end && std::isspace(s[start]))
-        ++start;
+    for (; i < 3; i++)
+    {        
+        sendMessage(this->_socketFd, auth[i]);
+        
+        usleep(1000);
 
-    while (end > start && std::isspace(s[end - 1]))
-        --end;
+        std::stringstream s(receiveMessage(this->_socketFd));
+        if (s.str().empty())
+            continue;
+     
+        std::string server;
+        int         err;
+        if (s >> server >> err && ERROR(err))
+            throw std::runtime_error("Error: " + s.str());
+    }
 
-    return s.substr(start, end - start);
+    LOG("===================Authentication successful================");
+  
 }
+
+
+void
+botClient::privmsg(const std::string &target, const std::string &message)
+{
+    std::string fullmsg = "PRIVMSG " + target + " :" + message + "\r\n";
+    sendMessage(this->_socketFd, fullmsg);
+    LOG("sent=> " << fullmsg);
+}
+
+msg botClient::_parseMsg(const std::string &line)
+{
+    std::string target;
+    std::string cmd;
+    if (line.find("PRIVMSG") != std::string::npos)
+    {
+        size_t  begining = line.find(':');
+        size_t  end      = line.find('!');
+        if (begining != std::string::npos && end != std::string::npos)
+            target = line.substr(begining + 1, end - begining - 1);
+        begining = line.find(" :");
+        cmd = line.substr(begining + 2);
+    }
+    msg res;
+    res.content = cmd;
+    res.target = target;
+    return res;
+}
+
 
 void
 botClient::startBot()
 {
     while (true)
     {
-        std::string line = recieve();
-        if (!line.empty())
+        std::string line = receiveMessage(this->_socketFd);
+        std::replace(line.begin(), line.end(), '\r', '\n');
+
+        std::vector<std::string> lines = split(line, '\n');
+
+        for (std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
         {
-            if (line.find("privmsg"))
-            std::cout << "BOT RCV: " << line << std::endl; // For debugging
-            Server::sendReply(this->_socketFd, line);
-            
+            std::string trimmed = trim(*it);
+            if (trimmed.empty())
+                continue;
+            LOG("Received <=" << trimmed);
+            if (trimmed.find("PING") != std::string::npos)  
+            {
+                sendMessage(this->_socketFd, "PONG");
+                LOG("Sent => PONG");
+            } 
+            else if (trimmed.find("PRIVMSG") != std::string::npos)
+            {
+                msg target = _parseMsg((*it));
+                LOG("Parsed message: target=" << target.target << ", content=" << target.content);
+                std::map<std::string, commands>::iterator it = commandList.find(target.content);
+
+                if (it != commandList.end()) 
+                {
+                    commands func = it->second;
+                    (this->*func)(target.target);
+                } 
+                else
+                    this->privmsg(target.target, "Unknown command: " + target.content);
+                
+            }
+
         }
+
+
     }
+}
+
+
+void
+botClient::prompt( void )
+{
+    LOG("Bot prompt> ");
+    std::cout << "enter server address: ";
+    std::cin >> this->_serverAddress;
+    if (this->_serverAddress == "localhost")
+        this->_serverAddress = LOCALHOST;
+    std::cout << "enter server port: ";
+    std::cin >> this->_serverPort;
+    if (this->_serverPort <= 0 || this->_serverPort > 65535)
+        this->_serverPort = PORT;
+    std::cout << "enter bot password: ";
+    std::cin >> this->_password;
+    std::cout << "enter bot nickname: ";
+    std::cin >> this->_nick;
+    if (this->_nick.empty())
+        this->_nick = DEFAULT_NICK;
 }

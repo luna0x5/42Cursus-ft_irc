@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/26 15:16:08 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/26 19:37:02 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,7 @@
 #define W_REALNAME(realname)   (std::string("REAL NAME  => [") + realname + "]")
 
 // listcmds
-#define RPL_CMD_PASS         (std::string("PASS <password>                => Set connection password"))
-#define RPL_CMD_NICK         (std::string("NICK <nickname>                => Set or change nickname"))
-#define RPL_CMD_USER         (std::string("USER <user> 0 * :<realname>    => Register username and real name"))
-#define RPL_CMD_JOIN         (std::string("JOIN <chan> [key]              => Join or create a channel"))
-#define RPL_CMD_MODE         (std::string("MODE <chan> [modes]            => View or change channel modes")) 
-#define RPL_CMD_TOPIC        (std::string("TOPIC <chan> [topic]           => View or set topic"))
-#define RPL_CMD_KICK         (std::string("KICK <chan> <nick>             => Kick a user"))
-#define RPL_CMD_PRIVMSG      (std::string("PRIVMSG <target> :<msg>        => Send a private message"))
 
-// Mode options (indented under MODE)
-#define RPL_MODE_I           (std::string("    +i   => Invite-only channel"))
-#define RPL_MODE_T           (std::string("    +t   => Only operators may set topic"))
-#define RPL_MODE_K           (std::string("    +k   => Channel key (password)"))
-#define RPL_MODE_L           (std::string("    +l   => User limit"))
-#define RPL_MODE_O           (std::string("    +o   => Give/take channel operator privileges"))
 
 // Standard errors & replies
 #define ERR_NEEDMOREPARAMS(clnt, cmd)     (std::string(":") + SERVERNAME + " 461 " + clnt + " " + cmd + " :Not enough parameters\r\n")

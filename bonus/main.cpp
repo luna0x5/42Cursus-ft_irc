@@ -6,35 +6,27 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 18:08:23 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/25 18:30:33 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/27 15:26:01 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "botClient.hpp"
+#include "Inc/bot.hpp"
 
-int main(int ac, char **av)
+int main()
 {
-    if (ac != 3) {
-        std::cerr <<" <port> <password>" << std::endl;
-        return 1;
-    }
-    int port;
-    std::stringstream ss(av[1]);
-    ss >> port;
-    if (port < 1 || port > 65535) {
-        std::cerr << "Invalid port number." << std::endl;
-        return 1;
-    }
     try
     {
-        // std::cerr << "llll" << std::endl;
-        botClient bot(av[2], "bot", "yuury", "127.0.0.1", port);
-        bot.establishConnection();
-        bot.authenticate();
-    }
-    catch(const std::runtime_error& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+        // PARSER METHODS 
+        botClient bot(DEFAULT_NICK);
+        bot.prompt();
+        bot.establishConnection(); // fail
+        bot.authenticate(); // fail
+        bot.startBot(); // continue
     
+    }
+    catch (const std::exception &e)
+    {
+        ELOG(e.what());
+    }
+    return 0;
 }
