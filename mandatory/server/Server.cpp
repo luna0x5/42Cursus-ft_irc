@@ -82,6 +82,7 @@ Server::running_server(int Socket_fd)
                     char buffer[1048];
                     memset(buffer, 0, sizeof(buffer));
                     int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+                    std::cout << "Received : " << bytes << std::endl;
                     if (bytes <= 0)
                     {
                         if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {

@@ -33,12 +33,16 @@ void Client::AddBuffer(const char *buf){
 
 void Client::extract_cmds(void){
     size_t pos = 0;
-    
+    // std::cout << "Buffer before extracting commands: [" << Buffer << "] --> " << Buffer.size() << std::endl;
+    Buffer.erase(std::remove(Buffer.begin(), Buffer.end(), '\r'), Buffer.end());
+    // std::cout << "Buffer after removing carriage returns: [" << Buffer << "] --> " << Buffer.size() << std::endl;
+
     while ((pos = Buffer.find("\n")) != std::string::npos) { // WE WILL USE "\r\n" when we will use limechat
         std::string command = Buffer.substr(0, pos);
         
         if (!command.empty()) {
             cmds.push_back(command);
+            // std::cout << "Extracted command: [" << command << "]"<<std::endl;
         }
         Buffer.erase(0, pos + 2);
     }
