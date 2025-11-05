@@ -2,7 +2,7 @@
 #include "Channel.hpp"
 
 
-// volatile sig_atomic_t flag = 0;
+volatile sig_atomic_t flag = 0;
 
 Server::Server(uint port , std::string password): _port(port), _password(password)
 {
@@ -14,8 +14,8 @@ Server::~Server()
    cleaner();
 }
 
-int 
-Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
+int
+Server::server_socket()
 {
     int err;
 
@@ -25,7 +25,7 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
     
     int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
     checkErr(flag, -1, "Error: Failed to get server socket status flag!");
-    flag |= O_NONBLOCK; 
+    flag |= O_NONBLOCK;
     err = fcntl(this->_Socket_fd, F_SETFL , flag);// setting the socket to non blocking for concurrency
     checkErr(err, -1, "Error: Failed to set socket flag!");
 
@@ -56,10 +56,12 @@ Server::server_socket() //TODO: might set the dual socket ipv6 and 4 later
 void
 Server::running_server(int Socket_fd)
 {
-    // while(!flag)
-    while(true)
+    while(!flag)
+    // while(true)
     {
         int monitor = poll(this->_poll_fds.data(), this->_poll_fds.size(), -1);//poll to monitor multiple fds without i/o blocking
+        if (monitor == -1 && errno == EINTR)
+            continue;
         checkErr(monitor, -1, "Error : Failed poll");
 
         for (size_t i = 0; i < this->_poll_fds.size(); i++)
@@ -80,18 +82,14 @@ Server::running_server(int Socket_fd)
                     char buffer[1048];
                     memset(buffer, 0, sizeof(buffer));
                     int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+                    std::cout << "Received : " << bytes << std::endl;
                     if (bytes <= 0)
                     {
-                        //     if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                        //     std::cout<<"no data"<<std::endl;
-                        //     }
-                        // else {
-                        close(this->_poll_fds[i].fd);
-                        std::cout<<  " -> client : " <<this->_poll_fds[i].fd << " is disconnected!" <<std::endl;
-                        _client.erase(this->_poll_fds[i].fd);
-                        this->_poll_fds.erase(this->_poll_fds.begin() + i);
+                        if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+                            continue; // No data available right now, try again later
+                        }
+                        remove_client(this->_poll_fds[i].fd, i);
                         i--;
-                        // }
                     }
                     else
                     {
@@ -105,7 +103,7 @@ Server::running_server(int Socket_fd)
             }
         }
     }
-    // cleaner();
+    cleaner();
 }
 
 void Server::start(){
@@ -127,6 +125,31 @@ Server::checkErr(const int res, const int err, const char *msg)
     return ;
 }
 
-// void Server::Handler(int){
-//     flag = 1;
-// }
+void Server::Handler(int){
+    flag = 1;
+}
+
+void Server::remove_client(int fd, int i){
+    for (ch_it it = this->_channel.begin(); it != this->_channel.end();){
+        Channel &chan = it->second;
+        std::string message = ":" + this->_client[fd].getPrefix() + " QUIT " + chan.GetName() + "\r\n";
+        if (chan.is_Member(this->_client[fd].getnick())){
+            chan.rmMember(&this->_client[fd]);
+            chan.broadcastReply(message);
+            if (chan.is_Op(fd)){
+                chan.rmOps(&this->_client[fd]);
+            }
+            if (chan.getMembersCount() == 0){
+                ch_it tmp = it;
+                ++it;
+                this->_channel.erase(tmp);
+                continue;
+            }
+        }
+        ++it;
+    }
+    close(fd);
+    std::cout<<  " -> client : " <<fd << " is disconnected!" <<std::endl;
+    _client.erase(fd);
+    this->_poll_fds.erase(this->_poll_fds.begin() + i);
+}

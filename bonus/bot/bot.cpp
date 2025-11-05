@@ -67,6 +67,7 @@ Server::listcmds( void )
                 RPL_CMD_NICK,
                 RPL_CMD_USER,
                 RPL_CMD_JOIN,
+                RPL_CMD_PART,
                 RPL_CMD_MODE,
                 RPL_MODE_I,
                 RPL_MODE_T,
@@ -89,10 +90,10 @@ Server::listusers(int fd, const std::string &nick)
     if (!channel)
         return sendReply(fd, ERR_NOSUCHCHANNEL(nick, this->_line[2]));
 
-    std::map<std::string, Client>  members = channel->GetMembers();
+    std::map<int, Client*>  members = channel->GetMembers();
     std::vector<std::string> names;
-    for (std::map<std::string, Client>::iterator it = members.begin(); it != members.end(); ++it)
-        names.push_back(it->first);
+    for (std::map<int, Client*>::iterator it = members.begin(); it != members.end(); ++it)
+        names.push_back(it->second->getnick());
 
     helpRpl( "-listusers", &names[0], channel->getMembersCount());
 

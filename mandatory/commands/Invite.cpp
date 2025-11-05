@@ -34,7 +34,7 @@ void Server::INVITE(void)
 		sendReply(sender.getFd(), ERR_NOTONCHANNEL(sender.getnick(), channelName));
 		return ;		
 	}
-	if (chan.get_i() && !chan.is_Op(sender.getnick()))
+	if (chan.get_i() && !chan.is_Op(sender.get_fd()))
 	{
 		sendReply(sender.getFd(), ERR_CHANOPRIVSNEEDED(sender.getnick(), channelName));
 		return ;

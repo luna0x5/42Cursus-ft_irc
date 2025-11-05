@@ -6,13 +6,14 @@
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/11 02:47:29 by hmoukit           #+#    #+#             */
-/*   Updated: 2025/10/26 16:50:29 by hmoukit          ###   ########.fr       */
+/*   Updated: 2025/10/18 17:05:18 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Inc/Server.hpp"
 
-void Server::PRIVMSG(void)
+//TODO: check if you should fix the : problem
+void Server::PRIVMSG(void) //TODO: THE CODE IS TOO LONG 
 {
 	Client &sender = this->_client[this->_currentClient];
 	std::vector<std::string> args = this->_line;
@@ -21,33 +22,14 @@ void Server::PRIVMSG(void)
 		sendReply(sender.getFd(), ERR_NEEDMOREPARAMS(sender.getnick(), "PRIVMSG"));
 		return ;
 	}
-	std::string targets;
+	std::string targets = args[1];
 	std::string message;
-	if (getChekPriv())
+	for(size_t i = 2; i < args.size(); ++i)
 	{
-		setCheckPriv(false);
-		if (args.size() > 2)
-		{
-			message = args[1].substr(1);
-			targets = args[2];
-		}
-		else
-		{
-			sendReply(sender.getFd(), ERR_NORECIPIENT(sender.getnick(), "PRIVMSG"));
-			return;
-		}
-	}
-
-	else
-	{
-		targets = args[1];
-		for(size_t i = 2; i < args.size(); ++i)
-		{
-			if (i == 2 && args[i][0] == ':')
+		if (i == 2 && args[i][0] == ':')
 			message += args[i].substr(1);
-			else
+		else
 			message += " " + args[i];
-		}
 	}
 	if (message.empty())
 	{
@@ -70,11 +52,12 @@ void Server::PRIVMSG(void)
 			Channel &chan = this->_channel[target];
 			if (!chan.is_Member(sender.getnick()))
 			{
-				sendReply(sender.getFd(), ERR_CANNOTSENDTOCHAN(chan.GetName()));
+				sendReply(sender.getFd(), ERR_CANNOTSENDTOCHAN(sender.getnick(), chan.GetName()));
 				continue;
 			}
 			std::string msg = ":" + sender.getPrefix() + " PRIVMSG " + target + " :" + message + "\r\n";
-			chan.broadcastReply(msg);
+			std::cout << "HERE" << std::endl;
+			chan.broadcastReply(msg); //TODO: there's a problem after this line the message doesn't get broadcasted
 		}
         else
         {

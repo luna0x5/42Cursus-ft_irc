@@ -17,6 +17,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <signal.h>
+#include <cerrno>
+#include <sys/resource.h>
 
 #include "numericalReplies.hpp"
 // #include "Channel.hpp"
@@ -27,6 +30,7 @@ enum Commands {
     NICK_cmd,
     USER_cmd,
     JOIN_cmd,
+    PART_cmd,
     MODE_cmd,
     TOPIC_cmd,
     KICK_cmd,
@@ -45,7 +49,7 @@ class Server
             int                             _Socket_fd;
             std::map<int, Client>           _client;
             int                             _currentClient;
-            std::map<std::string, Channel>  _channel;
+            std::map<std::string, Channel>  _channel;// TODO:
             std::vector<pollfd>             _poll_fds;
             std::vector<std::string>        _line;
             std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
@@ -54,8 +58,6 @@ class Server
 
             typedef std::map<std::string, Channel>::iterator ch_it;
             typedef std::map<int, Client>::iterator          cl_it;
-
-			bool							checkPriv;
 
     public:
             Server(uint port , std::string password);
@@ -69,6 +71,7 @@ class Server
 
             int         server_socket(void);
             void        running_server(int Socket_fd);
+            void        remove_client(int fd, int i);
 
             void        handle_new_connections(int Socket_fd);
             void        handle_client_data(int fd);
@@ -119,9 +122,6 @@ class Server
             bool        Already_in_channel(Channel &chan, const std::string &nick);
 
 			int         IsChannelExist(std::string ChanName);
-
-			bool getChekPriv(void);
-			void setCheckPriv(bool check);
         //     bool        Invite_only(Channel &chan);
         //     void        sendReply(const reply code, const std::string cmdName);
 

@@ -6,7 +6,7 @@
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 21:31:45 by hmoukit           #+#    #+#             */
-/*   Updated: 2025/10/23 18:04:35 by hmoukit          ###   ########.fr       */
+/*   Updated: 2025/10/18 16:58:35 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ void Server::TOPIC(void)
 	if (args.size() == 2)
 	{
 		if (!chan.hasTopic())
-			sendReply(sender.getFd(), RPL_NOTOPIC(channelName));
+			sendReply(sender.getFd(), RPL_NOTOPIC(sender.getnick(), channelName));
 		else
-			sendReply(sender.getFd(), RPL_TOPIC(channelName, chan.getTopic()));
+			sendReply(sender.getFd(), " TOPIC REPLY"); //TODO: need changes
 		return ;
 	}
-	if (chan.get_t() && !chan.is_Op(sender.getnick()))
+	if (chan.get_t() && !chan.is_Op(sender.get_fd()))
 	{
 		sendReply(sender.getFd(), ERR_CHANOPRIVSNEEDED(sender.getnick(), channelName));
 		return ;
