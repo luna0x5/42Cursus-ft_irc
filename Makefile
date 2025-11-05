@@ -25,7 +25,7 @@ files	=	main.cpp \
 			mandatory/commands/Topic.cpp \
 			mandatory/commands/mode/mode.cpp\
 			mandatory/commands/mode/utils.cpp\
-			bonus/bot/bot.cpp
+
 
 B_files	=	bonus/main.cpp \
 			bonus/bot/botClient.cpp \

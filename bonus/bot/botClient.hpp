@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:17:55 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/28 15:52:22 by yuury            ###   ########.fr       */
+/*   Updated: 2025/11/05 13:34:34 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <ctime>
 #include <cerrno>
 #include <algorithm>
+#include <cstdlib>
 
 typedef struct msg
 {

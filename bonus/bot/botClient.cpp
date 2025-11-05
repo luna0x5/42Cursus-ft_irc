@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   botClient.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/27 15:27:46 by yuury            ###   ########.fr       */
+/*   Updated: 2025/10/27 22:39:39 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ botClient::startBot()
             else if (trimmed.find("PRIVMSG") != std::string::npos)
             {
                 msg target = _parseMsg((*it));
-                LOG("Parsed message: target=" << target.target << ", content=" << target.content);
+                // LOG("Parsed message: target=" << target.target << ", content=" << target.content);
                 std::map<std::string, commands>::iterator it = commandList.find(target.content);
 
                 if (it != commandList.end()) 
@@ -183,14 +183,11 @@ botClient::startBot()
                 } 
                 else
                     this->privmsg(target.target, "Unknown command: " + target.content);
-                
             }
-
         }
-
-
     }
 }
+
 
 
 void
@@ -202,9 +199,14 @@ botClient::prompt( void )
     if (this->_serverAddress == "localhost")
         this->_serverAddress = LOCALHOST;
     std::cout << "enter server port: ";
-    std::cin >> this->_serverPort;
-    if (this->_serverPort <= 0 || this->_serverPort > 65535)
-        this->_serverPort = PORT;
+    std::string port;
+    std::cin >> port;
+    int portint = std::atoi(port.c_str());
+    // std::cout << portint;
+    if (portint >= 1024 && portint < 65535)
+        this->_serverPort = portint;
+    else 
+        throw std::runtime_error("Error: Invalid port number : " + port);
     std::cout << "enter bot password: ";
     std::cin >> this->_password;
     std::cout << "enter bot nickname: ";
