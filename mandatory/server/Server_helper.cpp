@@ -102,6 +102,42 @@ void Server::commands_handler(){
     this->_line.clear();
 }
 
+// void Server::parse_cmd(std::string cmd){
+
+//     std::string message;
+//     std::string prefix;
+//     std::string command;
+//     std::string target;
+//     size_t      pos = cmd.find(" :");
+
+//     if (pos != std::string::npos){
+//         message = cmd.substr(pos + 2);
+//         cmd.erase(pos);
+//     }
+//     std::stringstream bf(cmd);
+//     if (cmd[0] == ':'){
+//         bf>>prefix;
+//         prefix.erase(0,1);
+//     }
+//     bf>>command;
+//     if (!command.empty()){
+//         std::transform(command.begin(), command.end(), command.begin(), to_upper_char);
+//         this->_line.push_back(command);
+//     }
+//     if (!message.empty()){
+//         this->_line.push_back(message);
+//     }
+//     if (!prefix.empty()){
+//         this->_line.push_back(prefix);
+//     }
+//     while(bf>>target){
+//         if (!target.empty()){
+//             this->_line.push_back(target);
+//         }
+//     }
+//     commands_handler();
+// }
+
 void Server::parse_cmd(std::string cmd){
 
     std::string message;
@@ -110,8 +146,9 @@ void Server::parse_cmd(std::string cmd){
     std::string target;
     size_t      pos = cmd.find(" :");
 
+	setCheckPriv(false);
     if (pos != std::string::npos){
-        message = cmd.substr(pos + 2);
+        message = cmd.substr(pos + 1);
         cmd.erase(pos);
     }
     std::stringstream bf(cmd);
@@ -125,6 +162,8 @@ void Server::parse_cmd(std::string cmd){
         this->_line.push_back(command);
     }
     if (!message.empty()){
+		if (command == "privmsg" || command == "PRIVMSG")
+			setCheckPriv(true);
         this->_line.push_back(message);
     }
     if (!prefix.empty()){
@@ -178,4 +217,14 @@ int Server::IsChannelExist(std::string ChanName)
     if (_channel.find(ChanName) != _channel.end())
         return 1;
     return 0;
+}
+
+bool Server::getChekPriv(void)
+{
+	return (checkPriv);
+}
+
+void Server::setCheckPriv(bool check)
+{
+	checkPriv = check;
 }

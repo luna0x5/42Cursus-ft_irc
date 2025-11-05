@@ -59,6 +59,8 @@ class Server
             typedef std::map<std::string, Channel>::iterator ch_it;
             typedef std::map<int, Client>::iterator          cl_it;
 
+			bool							checkPriv;
+
     public:
             Server(uint port , std::string password);
             ~Server();
@@ -122,6 +124,9 @@ class Server
             bool        Already_in_channel(Channel &chan, const std::string &nick);
 
 			int         IsChannelExist(std::string ChanName);
+
+			bool getChekPriv(void);
+			void setCheckPriv(bool check);
         //     bool        Invite_only(Channel &chan);
         //     void        sendReply(const reply code, const std::string cmdName);
 

@@ -6,7 +6,7 @@
 /*   By: hmoukit <hmoukit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/18 16:57:18 by hmoukit          ###   ########.fr       */
+/*   Updated: 2025/11/05 12:04:39 by hmoukit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,13 @@
 #define ERR_INVITEONLYCHAN(clnt, chnl)    (std::string(":") + SERVERNAME + " 473 " + clnt + " " + chnl + " :Invite only channel\r\n")
 #define ERR_CHANNELISFULL(clnt, chnl)     (std::string(":") + SERVERNAME + " 471 " + clnt + " " + chnl + " :Channel is full\r\n")
 
-#define ERR_NOTEXTTOSEND(clnt, cmd)		  (std::string(":") + SERVERNAME + " 412 " + clnt + " " + cmd + " :No text to send\r\n") //TODO: PROBABLY INCORRECT FORMAT
-#define ERR_CANNOTSENDTOCHAN(clnt, chnl)  (std::string(":") + SERVERNAME + " 404 " + clnt + " " + chnl + " :Cannot send to channel\r\n") //TODO: PROBABLY INCORRECT FORMAT
-#define RPL_NOTOPIC(clnt, chnl)		      (std::string(":") + SERVERNAME + " 331 " + clnt + " " + chnl + " :No topic is set\r\n") //TODO: PROBABLY INCORRECT FORMAT
-#define RPL_TOPIC(clnt, chnl, topic)	  (std::string(":") + SERVERNAME + " 332 " + clnt + " " + chnl + " :" + topic + "\r\n") //TODO: PROBABLY INCORRECT FORMAT
-#define ERR_USERONCHANNEl(tnick, chnl)	  (std::string(":") + SERVERNAME + " 443 " + tnick + " " + chnl + " :is already on channel\r\n") //TODO: PROBABLY INCORRECT FORMAT
-#define RPL_INVITING(clnt, tnick, chnl)	  (std::string(":") + SERVERNAME + " 341 " + clnt + " " + tnick + " " + chnl + " :invite\r\n") //TODO: PROBABLY INCORRECT FORMAT
+#define ERR_NOTEXTTOSEND(clnt, cmd)		  (std::string(":") + SERVERNAME + " 412 " + clnt + " " + cmd + " :No text to send\r\n")
+#define ERR_CANNOTSENDTOCHAN(chnl)  	  (std::string(":") + SERVERNAME + " 404 " + chnl + " :Cannot send to channel\r\n")
+#define RPL_NOTOPIC(chnl)		      	  (std::string(":") + SERVERNAME + " 331 " + chnl + " :No topic is set\r\n")
+#define RPL_TOPIC(chnl, topic)	  		  (std::string(":") + SERVERNAME + " 332 " + chnl + " :" + topic + "\r\n")
+#define ERR_USERONCHANNEl(tnick, chnl)	  (std::string(":") + SERVERNAME + " 443 " + tnick + " " + chnl + " :is already on channel\r\n")
+#define RPL_INVITING(clnt, tnick, chnl)	  (std::string(":") + SERVERNAME + " 341 " + clnt + " " + tnick + " " + chnl + " :invite\r\n")
+#define ERR_NORECIPIENT(clnt, cmd) 		  (std::string(":") + SERVERNAME + " 411 " + clnt + " " + cmd + " :No recipient given\r\n")
 
 // Bonus help bot replies
 #define ERR_HELPNOTFOUND(clnt, subject)   (std::string(":") + SERVERNAME + " 524 " + clnt + " " + subject + " :No help available on this topic\r\n") 
