@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/26 19:37:02 by yuury            ###   ########.fr       */
+/*   Updated: 2025/11/05 13:39:11 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,7 @@
 #define RPL_TOPIC(chnl, topic)	  		  (std::string(":") + SERVERNAME + " 332 " + chnl + " :" + topic + "\r\n")
 #define ERR_USERONCHANNEl(tnick, chnl)	  (std::string(":") + SERVERNAME + " 443 " + tnick + " " + chnl + " :is already on channel\r\n")
 #define RPL_INVITING(clnt, tnick, chnl)	  (std::string(":") + SERVERNAME + " 341 " + clnt + " " + tnick + " " + chnl + " :invite\r\n")
-
-// Bonus help bot replies
-#define ERR_HELPNOTFOUND(subject)          (std::string(":") + SERVERNAME + " 524 " + subject + " :No help available on this topic\r\n") 
-#define RPL_HELPSTART(subject)             (std::string(":") + SERVERNAME + " 704 " + subject + " :Welcome to our help Bot\r\n")
-#define RPL_HELPTXT(subject, txt)          (std::string(":") + SERVERNAME + " 705 " + subject + " :" + txt + "\r\n")
-#define RPL_ENDOFHELP(subject)             (std::string(":") + SERVERNAME + " 706 " + subject + " :End of /BOT " + subject + "\r\n")
+#define ERR_NORECIPIENT(clnt, cmd) 		  (std::string(":") + SERVERNAME + " 411 " + clnt + " " + cmd + " :No recipient given\r\n")
 
 
 char    validModeString( char mode );

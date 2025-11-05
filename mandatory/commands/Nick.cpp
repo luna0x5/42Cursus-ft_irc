@@ -1,12 +1,13 @@
 #include "Server.hpp"
 
 bool Server::AlreadyInUse(void){
-	std::map<int, Client>::iterator it = this->_client.begin();
+	std::map<int, Client >::iterator it = this->_client.begin();
 	for(size_t i = 0; i < this->_client.size(); i++){
 		if (it->second.getnick() == this->_line[1]){
 			return false;
 		}
-		std::advance(it,1);
+		++it;
+		// std::advance(it,1);
 	}
 	return true;
 }

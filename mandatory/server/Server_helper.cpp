@@ -21,7 +21,7 @@ Server::handle_new_connections(int Socket_fd)
     new_fd.fd = new_socket;
     new_fd.events = POLLIN;
     this->_poll_fds.push_back(new_fd);
-    this->_client[new_fd.fd] = Client();
+    this->_client[new_fd.fd] = Client(new_fd.fd);
 }
 
 void Server::handle_client_data(int fd){
@@ -38,6 +38,7 @@ void Server::initCmds(void){
     this->_cmd["NICK"] = NICK_cmd;
     this->_cmd["USER"] = USER_cmd;
     this->_cmd["JOIN"] = JOIN_cmd;
+    this->_cmd["PART"] = PART_cmd;
     this->_cmd["MODE"] = MODE_cmd;
     this->_cmd["TOPIC"] = TOPIC_cmd;
     this->_cmd["KICK"] = KICK_cmd;
@@ -70,18 +71,21 @@ void Server::commands_handler(){
             JOIN();
             break;
         case 4:
-            MODE();
+            std::cout<<"PART"<<std::endl;
             break;
         case 5:
-            TOPIC();
+            MODE();
             break;
         case 6:
-            KICK();
+            TOPIC();
             break;
         case 7:
-            INVITE();
+            KICK();
             break;
         case 8:
+            INVITE();
+            break;
+        case 9:
             PRIVMSG();
             break;
         default:{
@@ -94,6 +98,42 @@ void Server::commands_handler(){
     }
     this->_line.clear();
 }
+
+// void Server::parse_cmd(std::string cmd){
+
+//     std::string message;
+//     std::string prefix;
+//     std::string command;
+//     std::string target;
+//     size_t      pos = cmd.find(" :");
+
+//     if (pos != std::string::npos){
+//         message = cmd.substr(pos + 2);
+//         cmd.erase(pos);
+//     }
+//     std::stringstream bf(cmd);
+//     if (cmd[0] == ':'){
+//         bf>>prefix;
+//         prefix.erase(0,1);
+//     }
+//     bf>>command;
+//     if (!command.empty()){
+//         std::transform(command.begin(), command.end(), command.begin(), to_upper_char);
+//         this->_line.push_back(command);
+//     }
+//     if (!message.empty()){
+//         this->_line.push_back(message);
+//     }
+//     if (!prefix.empty()){
+//         this->_line.push_back(prefix);
+//     }
+//     while(bf>>target){
+//         if (!target.empty()){
+//             this->_line.push_back(target);
+//         }
+//     }
+//     commands_handler();
+// }
 
 void Server::parse_cmd(std::string cmd){
 
@@ -134,24 +174,13 @@ void Server::parse_cmd(std::string cmd){
     commands_handler();
 }
 
-
-
-// void Server::Sender(std::string num){
-//     std::string to_client   = ":localhost" + num + this->_client[this->_currentClient].getnick() + " :Welcome to our server\r\n";
-//     int         bytes       = send(this->_currentClient, to_client.c_str(), to_client.length(), 0);
-//     if(bytes < 0){
-//         std::cerr<<"failed send data "<<std::endl;
-//     }
-// }
-
 void Server::cleaner(void){
     for(size_t i=0; i < this->_poll_fds.size(); i++){
         close(this->_poll_fds[i].fd);
-        _client.erase(this->_poll_fds[i].fd);
-        this->_poll_fds.erase(this->_poll_fds.begin() + i);
-        i--;
     }
-    exit(1);
+    _client.clear();
+    this->_poll_fds.clear();
+    exit(0);
 }
 
 void

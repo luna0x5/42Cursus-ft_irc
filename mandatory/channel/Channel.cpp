@@ -18,12 +18,12 @@ Channel::Channel( const std::string name ): Name(name), _capacityLimit(0), _memb
 
 Channel::~Channel(){}
 
-const std::map<std::string, Client >&
+const std::map<int, Client *>&
 Channel::GetMembers(void)const {
 return this->_members;
 }
 
-const std::map<std::string, Client >&
+const std::map<int, Client *>&
 Channel::GetOps(void)const {
     return this->_Ops;
 }
@@ -47,9 +47,9 @@ Channel::getModes( void ) const
 }
 
 bool
-Channel::is_Op( const std::string &name ) const
+Channel::is_Op( int fd ) const
 {
-    std::map<std::string, Client>::const_iterator it = this->_Ops.find(name);
+    std::map<int, Client*>::const_iterator it = this->_Ops.find(fd);
 
     return (it != this->_Ops.end()) ? true : false;
 }
@@ -58,8 +58,14 @@ Channel::is_Op( const std::string &name ) const
 bool
 Channel::is_Member( const std::string &name ) const
 {
-    std::map<std::string, Client>::const_iterator it = this->_members.find(name);
-    return (it != this->_members.end()) ? true : false;
+    // std::map<std::string, Client>::const_iterator it = this->_members.find(name);
+    // return (it != this->_members.end()) ? true : false;
+    for(std::map<int, Client*>::const_iterator it = this->_members.begin(); it != this->_members.end(); ++it)
+    {
+        if (it->second->getnick() == name)
+            return true;
+    }
+    return false;
 }
 
 bool
@@ -99,37 +105,37 @@ void Channel::rmMode(const char &mode)
 }
 
 void
-Channel::addOps( Client &newOp )
+Channel::addOps( Client *newOp )
 {
-    if (!is_Op(newOp.getnick()))
-        this->_Ops[newOp.getnick()] = newOp;
+    if (!is_Op(newOp->get_fd()))
+        this->_Ops[newOp->get_fd()] = newOp;
 
 }
 
 void
-Channel::rmOps( Client &newOp )
+Channel::rmOps( Client *newOp )
 {
-    if (is_Op(newOp.getnick()))
-        this->_Ops.erase(newOp.getnick());
+    if (is_Op(newOp->get_fd()))
+        this->_Ops.erase(newOp->get_fd());
 
 }
 
 void
-Channel::addMember(Client &client)
+Channel::addMember(Client *client)
 {
-    if (!is_Member(client.getnick()))
+    if (!is_Member(client->getnick()))
         this->incrementCount();
 
-    this->_members[client.getnick()] = client;
-}
+    this->_members[client->get_fd()] = client;
+} //test mulitple clients with privmsg to check if we need to convert it to FDs
 
 void
-Channel::rmMember(Client &client)
+Channel::rmMember(Client *client)
 {
-    if (is_Member(client.getnick()))
+    if (is_Member(client->getnick()))
         this->decrementCount();
 
-    this->_members.erase(client.getnick());
+    this->_members.erase(client->get_fd());
 }
 
 void
@@ -183,10 +189,12 @@ Channel::set_k( char flag, const std::string &pass)
 }
 
 bool
-Channel::set_o( char flag, Client &op )
+Channel::set_o( char flag, Client *op )
 {
-    std::string name = op.getnick();
-    constmap_it    oper = this->GetMembers().find(name);
+    std::string name = op->getnick();
+    // constmap_it    oper = this->GetMembers().find(name);
+    int fd = op->get_fd();
+    constmap_it    oper = this->GetMembers().find(fd);
 
     if (oper == this->GetMembers().end())
         return false;
@@ -252,59 +260,34 @@ Channel::getTime( void )const
     return this->_creationTime;
 }
 
-// void
-// Channel::broadcastReply(const std::string &reply)
-// {
-//TODO: there's a problem after this line == the message doesn't get broadcasted
-//     if (this->changedModes.empty())
-//         return ;
-
-//     std::map<std::string, Client>   members = this->GetMembers();
-//     constmap_it                     clients = members.begin();
-
-//     for (; clients !=  members.end(); clients++)
-//         Server::sendReply(clients->second.getFd(), reply);
-//     std::cerr<<"sent => RPL_MODE."<<std::endl;
-// }
-
 void
 Channel::broadcastReply(const std::string &reply)
 {
-    std::map<std::string, Client>   members = this->GetMembers();
+    std::map<int, Client*>   members = this->GetMembers();
     constmap_it                     clients = members.begin();
 
     for (; clients !=  members.end(); clients++)
-        Server::sendReply(clients->second.getFd(), reply);
+        Server::sendReply(clients->second->getFd(), reply);
 }
 
-bool	Channel::get_t(void)
-{
-	return(_t);
-}
-bool	Channel::get_i(void)
-{
-	return(_i);
-}
+const std::string 
+Channel::getTopic() const { return topic; }
 
-const std::string& Channel::getTopic() const
-{
-	return (topic);
-}
-void Channel::setTopic(const std::string& top)
-{
-	topic = top;
-}
-bool Channel::hasTopic() const
-{
-	return (!topic.empty());
-}
-void Channel::addInvite(const std::string &nick)
+void 
+Channel::setTopic(const std::string& top) { topic = top; }
+
+bool 
+Channel::hasTopic() const { return !topic.empty(); }
+
+void 
+Channel::addInvite(const std::string &nick)
 {
 	// Avoid duplicates
 	if (!isInvited(nick))
 		invitedUsers.push_back(nick);
 }
-bool Channel::isInvited(const std::string &nick) const
+bool 
+Channel::isInvited(const std::string &nick) const
 {
 	for (size_t i = 0; i < invitedUsers.size(); ++i)
 	{
@@ -313,14 +296,38 @@ bool Channel::isInvited(const std::string &nick) const
 	}
 	return false;
 }
-
-void Channel::removeMember(const std::string &nick)
+void 
+Channel::removeInvite(const std::string &nick)
 {
-	std::map<std::string, Client>::iterator it = _members.find(nick);
-	if (it != _members.end())
+	for (std::vector<std::string>::iterator it = invitedUsers.begin();
+		it != invitedUsers.end(); ++it)
 	{
-		_members.erase(it);
-		if (_membersCount > 0)
-			_membersCount--;
+		if (*it == nick)
+		{
+			invitedUsers.erase(it);
+			return;
+		}
 	}
+}
+void 
+Channel::removeMember(const std::string &nick)
+{
+    std::string name = nick;
+    for (std::map<int, Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
+    {
+        if (it->second->getnick() == name)
+        {
+            _members.erase(it);
+            if (_membersCount > 0)
+            _membersCount--;
+            return;
+        }
+    }
+    // std::map<int, Client>::iterator it = _members.find(nick);
+	// if (it != _members.end())
+	// {
+	// 	_members.erase(it);
+	// 	if (_membersCount > 0)
+	// 		_membersCount--;
+	// }
 }

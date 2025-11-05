@@ -5,12 +5,14 @@
 #include<map>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 class Client {
     private:
         std::string ip;
         std::string Buffer;
         std::vector<std::string> cmds; //to store all cmds ends with /r/n
+
 
 
         bool isPassed; // defaul 0
@@ -24,15 +26,16 @@ class Client {
         std::string nickname;
         std::string username;
         std::string realname;
-        int         _fd;
         
-    public:
+        public:
+        int         _fd; //need to be private with getter and setter
         Client();
+        Client(int fd);
         ~Client();
         std::string& getBuffer(void);
         std::vector<std::string>& getCmds(void);
 
-
+        int  get_fd(void);
         void set_is_user(bool u);
         bool get_is_user(void);
         bool get_is_nick(void);
@@ -49,7 +52,7 @@ class Client {
         void SitUsername(std::string user);
         void setreg(void);
         int getreg(void);
-        std::string getnick(void);
+        std::string getnick(void) const;
         void setnick(std::string nick);
         std::string getuser(void);
         void setuser(std::string user);

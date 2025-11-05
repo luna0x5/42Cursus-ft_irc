@@ -17,6 +17,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <signal.h>
+#include <cerrno>
+#include <sys/resource.h>
 
 #include "numericalReplies.hpp"
 // #include "Channel.hpp"
@@ -27,6 +30,7 @@ enum Commands {
     NICK_cmd,
     USER_cmd,
     JOIN_cmd,
+    PART_cmd,
     MODE_cmd,
     TOPIC_cmd,
     KICK_cmd,
@@ -56,9 +60,6 @@ class Server
 
 			bool							checkPriv;
 
-            std::string                     _botnick;
-            std::string                     _botusername;
-
     public:
             Server(uint port , std::string password);
             ~Server();
@@ -71,6 +72,7 @@ class Server
 
             int         server_socket(void);
             void        running_server(int Socket_fd);
+            void        remove_client(int fd, int i);
 
             void        handle_new_connections(int Socket_fd);
             void        handle_client_data(int fd);

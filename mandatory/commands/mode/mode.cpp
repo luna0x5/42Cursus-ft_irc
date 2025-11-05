@@ -6,7 +6,7 @@
 /*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/10/24 14:48:28 by yuury            ###   ########.fr       */
+/*   Updated: 2025/11/05 14:49:01 by yuury            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ Server::parseMode( void )
             flag = this->_line[2][i];
     }
 
-    if (channel->is_Op(nick) == false)
+    if (channel->is_Op(fd) == false)
         return std::cerr<<"sent => ERR_CHANOPRIVSNEEDED."<<std::endl, ERR_CHANOPRIVSNEEDED(nick, chName);
 
     return "";
@@ -128,7 +128,9 @@ Server::MODE( void )
             if (channel->changedModes[channel->changedModes.length() - 1] == '-'
                 || channel->changedModes[channel->changedModes.length() - 1] == '+')
                     channel->changedModes[channel->changedModes.length() - 1] = 0;
-            channel->changedModes+= flag;
+            size_t pos = channel->changedModes.find_last_of("-+");
+            if (flag != channel->changedModes[pos])
+                channel->changedModes+= flag;
         }
         switch (modestring[i])
         {
@@ -145,7 +147,7 @@ Server::MODE( void )
             {
                 count++;
                 Client  *op = this->userExist(this->_line[count]);
-                if (op && channel->set_o(flag, *op) == false)
+                if (op && channel->set_o(flag, op) == false)
                 {
                     sendReply(fd, ERR_USERNOTINCHANNEL(nick,  this->_line[count], channel->GetName()));
                     std::cerr<<"sent => ERR_USERNOTINCHANNEL." << std::endl;
