@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/10/27 22:39:39 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/11/06 15:35:08 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,12 @@ msg botClient::_parseMsg(const std::string &line)
         size_t  end      = line.find('!');
         if (begining != std::string::npos && end != std::string::npos)
             target = line.substr(begining + 1, end - begining - 1);
-        begining = line.find(" :");
-        cmd = line.substr(begining + 2);
+        begining = line.rfind(": ");
+        begining++;
+            ELOG(line);
+        if (begining == std::string::npos)
+            begining = line.rfind(":");
+        cmd = line.substr(begining + 1);
     }
     msg res;
     res.content = cmd;
@@ -173,7 +177,6 @@ botClient::startBot()
             else if (trimmed.find("PRIVMSG") != std::string::npos)
             {
                 msg target = _parseMsg((*it));
-                // LOG("Parsed message: target=" << target.target << ", content=" << target.content);
                 std::map<std::string, commands>::iterator it = commandList.find(target.content);
 
                 if (it != commandList.end()) 
@@ -195,22 +198,23 @@ botClient::prompt( void )
 {
     LOG("Bot prompt> ");
     std::cout << "enter server address: ";
-    std::cin >> this->_serverAddress;
-    if (this->_serverAddress == "localhost")
+    std::getline(std::cin, this->_serverAddress);
+    // std::cin >> this->_serverAddress;
+    if (this->_serverAddress == "localhost" || this->_serverAddress.empty())
         this->_serverAddress = LOCALHOST;
     std::cout << "enter server port: ";
     std::string port;
-    std::cin >> port;
+    std::getline(std::cin, port);
     int portint = std::atoi(port.c_str());
-    // std::cout << portint;
     if (portint >= 1024 && portint < 65535)
         this->_serverPort = portint;
     else 
         throw std::runtime_error("Error: Invalid port number : " + port);
     std::cout << "enter bot password: ";
-    std::cin >> this->_password;
+    std::getline(std::cin, this->_password);
+
     std::cout << "enter bot nickname: ";
-    std::cin >> this->_nick;
+        std::getline(std::cin, this->_nick);
     if (this->_nick.empty())
         this->_nick = DEFAULT_NICK;
 }

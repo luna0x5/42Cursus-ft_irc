@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   botClient.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:17:55 by yuury             #+#    #+#             */
-/*   Updated: 2025/11/05 13:34:34 by yuury            ###   ########.fr       */
+/*   Updated: 2025/11/06 13:45:58 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct msg
 class botClient
 {
     private:
+
         botClient(const botClient& other);
         botClient& operator=(const botClient& other);
     
@@ -45,9 +46,6 @@ class botClient
         std::string _nick;
         std::string _password;
           
-        typedef void (botClient::*commands)(const std::string &);
-        std::map<std::string, commands> commandList;
-        
         void    registerCommands(void);
         void    greeting(const std::string &target);
         void    ping(const std::string &target);
@@ -57,6 +55,9 @@ class botClient
         void    privmsg(const std::string &target, const std::string &message); 
 
             
+        typedef void (botClient::*commands)(const std::string &);
+        std::map<std::string, commands> commandList;
+        
     public:
 
         botClient(const std::string& nick);
@@ -64,7 +65,7 @@ class botClient
         
         void    prompt( void );
 
-        void    establishConnection(); // ===> 
+        void    establishConnection(); 
         void    authenticate();
         void    startBot();        
 };

@@ -23,7 +23,7 @@ Server::server_socket()
     checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
     //check if the errno == EINTR
     
-    int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them
+    int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them/./ TODO: not allowed
     checkErr(flag, -1, "Error: Failed to get server socket status flag!");
     flag |= O_NONBLOCK;
     err = fcntl(this->_Socket_fd, F_SETFL , flag);// setting the socket to non blocking for concurrency
