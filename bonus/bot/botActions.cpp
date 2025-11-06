@@ -29,7 +29,6 @@ botClient::stime(const std::string &target)
 
 
 void botClient::registerCommands() {
-    // How to populate the map    
     commandList["!hello"] = &botClient::greeting;
     commandList["!time"] = &botClient::stime;
     commandList["!ping"] = &botClient::ping;

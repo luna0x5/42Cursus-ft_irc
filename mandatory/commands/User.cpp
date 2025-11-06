@@ -10,15 +10,7 @@ bool checker(std::string s){
 }
 
 void Server::USER(void){
-	// for(size_t i=0; i < this->_line.size(); i++){
-	// 	std::cout<< "[ " <<this->_line[i] << " ]";
-	// }
-	// std::cout<<std::endl;
-	// std::cout<<this->_line[0] << std::endl;
-	// std::cout<<this->_line[1] << std::endl;
-	// std::cout<<this->_line[2] <<std::endl;
-	// std::cout<<this->_line[3] <<std::endl;
-	// std::cout<<this->_line[4] <<std::endl;
+
 	int	fd = this->_currentClient;
 	if (!this->_client[fd].getisPassed()){
 		sendReply(fd, ERR_NOTREGISTERED(this->_client[fd].getnick()));
@@ -48,18 +40,6 @@ void Server::USER(void){
 		std::cerr << "user3" << std::endl;
 		return;
 	}
-	// if (this->_line[3] != "0"){
-	// 	sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
-	// 	std::cerr << "sent => ERR_NEEDMOREPARAMS." << std::endl;
-		// std::cerr << "user4" << std::endl;
-	// 	return;
-	// }
-	// if (this->_line[1][0] != ':'){
-	// 	sendReply(fd, ERR_NEEDMOREPARAMS(this->_client[fd].getnick(), "USER"));
-	// 	std::cerr << this->_line[1] << std::endl;
-	// 	std::cerr << "user5" << std::endl;
-	// 	return;
-	// }
 	this->_client[fd].SitUsername(this->_line[2]);
 	this->_client[fd].setrealname(this->_line[1]);
 	this->_client[fd].setFd(fd);

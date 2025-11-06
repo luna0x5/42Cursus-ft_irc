@@ -127,7 +127,7 @@ Channel::addMember(Client *client)
         this->incrementCount();
 
     this->_members[client->get_fd()] = client;
-} //test mulitple clients with privmsg to check if we need to convert it to FDs
+}
 
 void
 Channel::rmMember(Client *client)
@@ -323,11 +323,23 @@ Channel::removeMember(const std::string &nick)
             return;
         }
     }
-    // std::map<int, Client>::iterator it = _members.find(nick);
-	// if (it != _members.end())
-	// {
-	// 	_members.erase(it);
-	// 	if (_membersCount > 0)
-	// 		_membersCount--;
-	// }
+}
+
+const std::string
+Channel::displayInfo(const std::string &nick)
+{
+    std::string modes = this->getModes();
+    std::string time = to_string<time_t>(this->getTime());
+    std::cerr<<"sent => RPL_CHANNELMODEIS."<<std::endl;
+    std::cerr<<"sent => RPL_CREATIONTIME."<<std::endl;
+    std::string args;
+    for (size_t i = 0; i < modes.size() ; i++)
+    {
+        if (modes[i] == 'l')
+            args += " " + to_string(this->getCapacityLimit());
+        else if (modes[i] == 'k')
+            args += " " + this->GetPassword();        
+    }
+    return  RPL_CHANNELMODEIS(nick,this->GetName() , modes + args) +
+            RPL_CREATIONTIME(nick, this->GetName(), time);
 }

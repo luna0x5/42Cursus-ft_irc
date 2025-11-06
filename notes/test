@@ -28,8 +28,18 @@ privmsg :l salaam
 zsh: segmentation fault (core dumped)  ./ircserv 8080 LALA
 
 ##################################
-mode #a +t
-:localhost 482 a #a :You're not a channel operator
-:l!~l@localhost PRIVMSG #a :mode #a +t
-privmsg bott !ping
-:bott!~bott@localhost PRIVMSG s :Unknown command:  !ping
+
+mode #ychagri -k
+mode #ychagri   
+:zinc.libera.chat 324 ychagri #ychagri +Cnstk kk
+:zinc.libera.chat 329 ychagri #ychagri 1762450768
+
+mode #ychagri   
+:localhost 324 d #ychagri +k
+:localhost 329 d #ychagri 1762450790
+
+
+######################################
+
+
+

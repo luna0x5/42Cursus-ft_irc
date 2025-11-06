@@ -20,15 +20,12 @@ class Client {
         bool isUser;
         bool registered; //default 0
 
-
-        // int reg_done;
-        // bool Op;
         std::string nickname;
         std::string username;
         std::string realname;
-        
-        public:
         int         _fd; //need to be private with getter and setter
+        
+    public:
         Client();
         Client(int fd);
         ~Client();
@@ -50,8 +47,6 @@ class Client {
         void extract_cmds(void);
         std::string& GetUsername(void);
         void SitUsername(std::string user);
-        void setreg(void);
-        int getreg(void);
         std::string getnick(void) const;
         void setnick(std::string nick);
         std::string getuser(void);
@@ -62,8 +57,6 @@ class Client {
         void            setFd(const int fd);
         int             getFd( void ) const;
 		std::string		getPrefix() const;
-
-
 };
 
 #endif

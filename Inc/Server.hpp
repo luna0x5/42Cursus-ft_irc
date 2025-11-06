@@ -22,7 +22,6 @@
 #include <sys/resource.h>
 
 #include "numericalReplies.hpp"
-// #include "Channel.hpp"
 class Channel;
 
 enum Commands {
@@ -51,8 +50,7 @@ class Server
             std::map<std::string, Channel>  _channel;
             std::vector<pollfd>             _poll_fds;
             std::vector<std::string>        _line;
-            std::map<std::string, Commands> _cmd;//TODO: better add pointer to the command handler instead
-
+            std::map<std::string, Commands> _cmd;
             std::string                     _serverName;
 
             typedef std::map<std::string, Channel>::iterator ch_it;
@@ -84,7 +82,7 @@ class Server
     
             int         ft_split(std::vector<std::string> *channels, std::string& chan, char delimiter);
 
-            int JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
+            int         JoinParse(std::vector<std::string> *channels, std::vector<std::string> *keys);
             void        JOIN(void);
 
             void        PASS(void);
@@ -111,15 +109,10 @@ class Server
             void        cleaner(void);
             void        OneClean(void);
             bool        findit(pollfd p);
-
-            bool        Already_in_channel(Channel &chan, const std::string &nick);
-
 			int         IsChannelExist(std::string ChanName);
 
 			bool getChekPriv(void);
 			void setCheckPriv(bool check);
-        //     bool        Invite_only(Channel &chan);
-        //     void        sendReply(const reply code, const std::string cmdName);
 
 };
 

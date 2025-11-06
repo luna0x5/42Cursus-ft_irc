@@ -7,7 +7,6 @@ bool Server::AlreadyInUse(void){
 			return false;
 		}
 		++it;
-		// std::advance(it,1);
 	}
 	return true;
 }
@@ -55,13 +54,11 @@ void Server::NICK(void){
 	if (!AlreadyInUse()){
 		sendReply(fd, ERR_NICKNAMEINUSE(nick, this->_line[1]));
 		std::cout<<"sent => ERR_NICKNAMEINUSE."<<std::endl;
-		// OneClean();
 		return;
 	}
 	if (!Nickparse()){
 		sendReply(fd, ERR_ERRONEUSNICKNAME(nick, this->_line[1]));
 		std::cout<<"sent => ERR_ERRONEUSNICKNAME."<<std::endl;
-		// OneClean();
 		return;
 	}
 	this->_client[fd].setnick(this->_line[1]);
@@ -73,5 +70,3 @@ void Server::NICK(void){
 	}
 
 }
-
-//nick + no params

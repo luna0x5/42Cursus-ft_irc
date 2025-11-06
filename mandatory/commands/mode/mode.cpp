@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:55:22 by ychagri           #+#    #+#             */
-/*   Updated: 2025/11/05 15:14:23 by yuury            ###   ########.fr       */
+/*   Updated: 2025/11/06 19:34:35 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,7 @@ Server::parseMode( void )
     
     std::string chName = channel->GetName();
     if (size == 2)
-    {
-        std::string time = to_string<time_t>(channel->getTime());
-        std::cerr<<"sent => RPL_CHANNELMODEIS."<<std::endl;
-        std::cerr<<"sent => RPL_CREATIONTIME."<<std::endl;
-        return  RPL_CHANNELMODEIS(nick,chName , channel->getModes()) +
-                RPL_CREATIONTIME(nick, chName, time);
-    }
+        return channel->displayInfo(nick);
 
     int count = 2;
     std::string modes("lko");

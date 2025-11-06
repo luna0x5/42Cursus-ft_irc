@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/11/06 15:35:08 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/11/06 21:11:17 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,6 @@ botClient::prompt( void )
     LOG("Bot prompt> ");
     std::cout << "enter server address: ";
     std::getline(std::cin, this->_serverAddress);
-    // std::cin >> this->_serverAddress;
     if (this->_serverAddress == "localhost" || this->_serverAddress.empty())
         this->_serverAddress = LOCALHOST;
     std::cout << "enter server port: ";

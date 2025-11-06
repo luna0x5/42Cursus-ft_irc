@@ -12,12 +12,12 @@ class Channel {
         std::string Name;
         std::string Password;
 
-        std::time_t                             _creationTime;
-        size_t                                     _capacityLimit;
-        uint                                    _membersCount;
-        std::map<int, Client*>           _members; //convert it to pointer to client
+        std::time_t                              _creationTime;
+        size_t                                   _capacityLimit;
+        uint                                     _membersCount;
+        std::map<int, Client*>                  _members;
         std::string                             _modes;
-        std::map<int, Client*>           _Ops;
+        std::map<int, Client*>                  _Ops;
         
         bool                                    _i;
         bool                                    _t;
@@ -78,12 +78,12 @@ class Channel {
         std::string                             changedModes;
         bool                                    brdcast;
         void                                    broadcastReply(const std::string &reply);
+        const std::string                       displayInfo(const std::string &nick);
 
         std::string& GetName(void);
         void SetName(std::string& name);
         std::string& GetPassword(void);
         
-		//TODO: TO PUT THE DEFINITION IN DIFFERENT FILE
 		const std::string getTopic() const;
 	    void setTopic(const std::string& top);
 		bool hasTopic() const;

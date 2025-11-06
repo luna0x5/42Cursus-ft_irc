@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numericalReplies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuury <yuury@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/11/05 15:33:08 by yuury            ###   ########.fr       */
+/*   Updated: 2025/11/06 21:03:08 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,6 @@
 #include <iostream>
 
 #define SERVERNAME                      (std::string("localhost"))
-
-//help
-#define RPL_WHOIS                       (std::string("whois <nick>             => Shows information about a user"))
-#define RPL_LISTUSERS                   (std::string("listusers <channel>      => Lists all members of the specified channel"))
-#define RPL_LISTCMDS                    (std::string("listcmds                 => Shows all commands available"))
-#define RPL_CMD_HELP                    (std::string("help                      => Show usage help"))
-
-//whois
-// WHOIS display helpers
-#define W_USERNAME(username)   (std::string("USER NAME  => [") + username + "]")
-#define W_NICKNAME(nickname)   (std::string("NICK NAME  => [") + nickname + "]")
-#define W_REALNAME(realname)   (std::string("REAL NAME  => [") + realname + "]")
-
-// listcmds
-
 
 // Standard errors & replies
 #define ERR_NEEDMOREPARAMS(clnt, cmd)            (std::string(":") + SERVERNAME + " 461 " + clnt + " " + cmd + " :Not enough parameters\r\n")

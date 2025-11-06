@@ -23,14 +23,11 @@ Server::server_socket()
     checkErr(this->_Socket_fd , -1, "Error: Failed to create server socket!");
     //check if the errno == EINTR
     
-    int flag = fcntl(this->_Socket_fd, F_GETFL, 0);// get the socket flags to append other flags after without affecting them/./ TODO: not allowed
-    checkErr(flag, -1, "Error: Failed to get server socket status flag!");
-    flag |= O_NONBLOCK;
-    err = fcntl(this->_Socket_fd, F_SETFL , flag);// setting the socket to non blocking for concurrency
+    err = fcntl(this->_Socket_fd, F_SETFL , O_NONBLOCK);// setting the socket to non blocking for concurrency
     checkErr(err, -1, "Error: Failed to set socket flag!");
 
     int opt = 1;
-    err = setsockopt(this->_Socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));// Allowing multiple sockets to bind to the same address and port
+    err = setsockopt(this->_Socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));// Allowing multiple sockets to bind to the same address and port
     checkErr(err, -1, "Error: Failed to set socket option!");
 
     sockaddr_in server_addr;// ipv4 socket address
@@ -79,10 +76,9 @@ Server::running_server(int Socket_fd)
                 }
                 else
                 {
-                    char buffer[1048];
+                    char buffer[1024];
                     memset(buffer, 0, sizeof(buffer));
                     int bytes = recv(this->_poll_fds[i].fd, buffer, sizeof(buffer) - 1, 0);
-                    std::cout << "Received : " << bytes << std::endl;
                     if (bytes <= 0)
                     {
                         if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
@@ -90,6 +86,7 @@ Server::running_server(int Socket_fd)
                         }
                         remove_client(this->_poll_fds[i].fd, i);
                         i--;
+                        continue;
                     }
                     else
                     {

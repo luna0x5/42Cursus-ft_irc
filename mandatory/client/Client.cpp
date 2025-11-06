@@ -33,20 +33,16 @@ void Client::AddBuffer(const char *buf){
 
 void Client::extract_cmds(void){
     size_t pos = 0;
-    // std::cout << "Buffer before extracting commands: [" << Buffer << "] --> " << Buffer.size() << std::endl;
     Buffer.erase(std::remove(Buffer.begin(), Buffer.end(), '\r'), Buffer.end());
-    // std::cout << "Buffer after removing carriage returns: [" << Buffer << "] --> " << Buffer.size() << std::endl;
-
-    while ((pos = Buffer.find("\n")) != std::string::npos) { // WE WILL USE "\r\n" when we will use limechat
+    while ((pos = Buffer.find("\n")) != std::string::npos) {
         std::string command = Buffer.substr(0, pos);
         
         if (!command.empty()) {
             cmds.push_back(command);
-            // std::cout << "Extracted command: [" << command << "]"<<std::endl;
         }
         Buffer.erase(0, pos + 2);
     }
-} // if the \r\n exactement in the end what find will return in buffer if it's empty
+} 
 
 
  std::string& Client::GetUsername(void){
@@ -60,8 +56,6 @@ void Client::SitUsername(std::string user){
 bool Client::getregistered(void){
     return this->registered;
 }
-
-////////////////////////////
 
 int  Client::get_fd(void){
     return _fd;
@@ -88,19 +82,9 @@ void Client::set_is_nick(bool n){
     this->isNick = n;
 }
 
-/////////////////////////////////
-
 void Client::setregistered(bool r){
     this->registered = r;
 }
-
-// void Client::setreg(void){
-//     this->reg_done++;
-// }
-
-// int Client::getreg(void){
-//     return this->reg_done;
-// }
 
 std::string Client::getnick(void) const{
     return this->nickname;
@@ -133,7 +117,7 @@ Client::getFd( void ) const
     return this->_fd;
 }
 
-std::string Client::getPrefix() const //TODO: CHECK IF IT DOES EXIST
+std::string Client::getPrefix() const
 {
 	return this->nickname + "!~" + this->nickname + "@localhost";
 }
