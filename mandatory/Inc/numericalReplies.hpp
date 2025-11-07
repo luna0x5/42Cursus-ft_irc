@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:17:18 by ychagri           #+#    #+#             */
-/*   Updated: 2025/11/06 21:03:08 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/11/07 16:35:23 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 #define ERR_USERONCHANNEl(tnick, chnl)	  (std::string(":") + SERVERNAME + " 443 " + tnick + " " + chnl + " :is already on channel\r\n")
 #define RPL_INVITING(clnt, tnick, chnl)	  (std::string(":") + SERVERNAME + " 341 " + clnt + " " + tnick + " " + chnl + " :invite\r\n")
 #define ERR_NORECIPIENT(clnt, cmd) 		  (std::string(":") + SERVERNAME + " 411 " + clnt + " " + cmd + " :No recipient given\r\n")
+
 
 
 char    validModeString( char mode );

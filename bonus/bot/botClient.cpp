@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/11/06 21:11:17 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/11/07 16:40:29 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,6 @@ msg botClient::_parseMsg(const std::string &line)
             target = line.substr(begining + 1, end - begining - 1);
         begining = line.rfind(": ");
         begining++;
-            ELOG(line);
         if (begining == std::string::npos)
             begining = line.rfind(":");
         cmd = line.substr(begining + 1);
@@ -168,7 +167,7 @@ botClient::startBot()
             std::string trimmed = trim(*it);
             if (trimmed.empty())
                 continue;
-            LOG("Received <=" << trimmed);
+            WLOG("Received <=" << trimmed);
             if (trimmed.find("PING") != std::string::npos)  
             {
                 sendMessage(this->_socketFd, "PONG");
@@ -207,13 +206,15 @@ botClient::prompt( void )
     int portint = std::atoi(port.c_str());
     if (portint >= 1024 && portint < 65535)
         this->_serverPort = portint;
+    else if (port.empty())
+        this->_serverPort = PORT;
     else 
         throw std::runtime_error("Error: Invalid port number : " + port);
     std::cout << "enter bot password: ";
     std::getline(std::cin, this->_password);
 
     std::cout << "enter bot nickname: ";
-        std::getline(std::cin, this->_nick);
+    std::getline(std::cin, this->_nick);
     if (this->_nick.empty())
         this->_nick = DEFAULT_NICK;
 }

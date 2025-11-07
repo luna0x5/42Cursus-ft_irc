@@ -8,7 +8,7 @@
 
 
 #define LOCALHOST "127.0.0.1"
-#define PORT 8080
+#define PORT 6667
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"    
