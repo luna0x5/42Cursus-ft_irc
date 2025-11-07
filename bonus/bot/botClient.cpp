@@ -6,7 +6,7 @@
 /*   By: ychagri <ychagri@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:28:04 by yuury             #+#    #+#             */
-/*   Updated: 2025/11/07 16:40:29 by ychagri          ###   ########.fr       */
+/*   Updated: 2025/11/07 16:54:10 by ychagri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ botClient::botClient(const std::string& nick)
     if (this->_socketFd == -1)
         throw std::runtime_error("Error: Failed to create bot socket!");
     
-    int flags = fcntl(this->_socketFd, F_GETFL, 0);
-    if (flags == -1) { 
-        close(this->_socketFd); 
-        throw std::runtime_error("Error: Failed to get socket flags!");
-    }
-    if (fcntl(this->_socketFd, F_SETFL, flags | O_NONBLOCK) == -1) {
+    // int flags = fcntl(this->_socketFd, F_GETFL, 0);
+    // if (flags == -1) { 
+    //     close(this->_socketFd); 
+    //     throw std::runtime_error("Error: Failed to get socket flags!");
+    // }
+    if (fcntl(this->_socketFd, F_SETFL, O_NONBLOCK) == -1) {
         close(this->_socketFd);
         throw std::runtime_error("Error: Failed to set socket to non-blocking!");
     }
